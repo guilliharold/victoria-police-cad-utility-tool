@@ -51,14 +51,10 @@
 code,name,region,region_label,division,div_code,psa,cri,classification
 # ── EASTERN — Goulburn Valley ──────────────────────────────────────────────
 ESP,Shepparton,E,Eastern,Goulburn Valley,GV,ESP,ESP,regional_hq
-EMO,Mooroopna,E,Eastern,Goulburn Valley,GV,ESP,ESP,suburban
-EYW,Yarrawonga,E,Eastern,Goulburn Valley,GV,ESP,ESP,small
-ENH,Nagambie,E,Eastern,Goulburn Valley,GV,ESP,ESP,small
-ECO,Cobram,E,Eastern,Goulburn Valley,GV,ESP,ESP,small
+EMP,Mooroopna,E,Eastern,Goulburn Valley,GV,ESP,ESP,suburban
 # ── EASTERN — Wangaratta ───────────────────────────────────────────────────
-EWA,Wangaratta,E,Eastern,Wangaratta,WA,EWA,EWA,regional_hq
-EBN,Benalla,E,Eastern,Wangaratta,WA,EWA,EWA,suburban
-EBR,Bright,E,Eastern,Wangaratta,WA,EWA,EWA,small
+EWT,Wangaratta,E,Eastern,Wangaratta,WA,EWT,EWT,regional_hq
+ECB,Cobram,E,Eastern,Wangaratta,WA,EWT,EWT,small
 # ── WESTERN — Bendigo ──────────────────────────────────────────────────────
 WBI,Bendigo,W,Western,Bendigo,WBI,WBI,WBI,regional_hq
 WKY,Kyneton,W,Western,Bendigo,WBI,WBI,WBI,small
