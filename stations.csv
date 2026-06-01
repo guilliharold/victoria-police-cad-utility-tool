@@ -80,7 +80,7 @@ EMP,Mooroopna,E,Eastern,Goulburn Valley (ED3),ED3,ESP,ESP,ESP,rural
 ESP,Shepparton,E,Eastern,Goulburn Valley (ED3),ED3,ESP,ESP,ESP,regional
 # Wangaratta (ED4)
 ECB,Cobram,E,Eastern,Wangaratta (ED4),ED4,EWT,ECB,ECB,rural
-ENM,Numurkah,E,Eastern,Wangaratta (ED4),EWT,ECB,ECB,rural
+ENM,Numurkah,E,Eastern,Wangaratta (ED4),EWT,ECB,ECB,ECB,rural
 EWT,Wangaratta,E,Eastern,Wangaratta (ED4),ED4,EWT,EWT,EWT,regional
 # Morwell (ED5)
 TBC,Station TBC,E,Eastern,Morwell (ED5),ED5,,,,suburban
