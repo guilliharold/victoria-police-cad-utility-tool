@@ -32,6 +32,12 @@
 #   psa            Code of the Police Service Area station covering this station.
 #                  Leave blank if unknown or not applicable.
 #
+#   hwp            Code of the Highway Patrol unit that services this station.
+#                  Leave blank if unknown or not applicable.
+#
+#   ciu            Code of the Crime Investigation Unit that services this station.
+#                  Leave blank if unknown or not applicable.
+#
 #   classification Station type. Must be exactly one of:
 #                  metropolitan = High-density urban, major population centres (e.g. Melbourne CBD precincts)
 #                  suburban     = Established metro/outer suburban station (default)
@@ -43,50 +49,50 @@
 #   • classification controls how many units the tool generates by default.
 #   • Stations appear in the dropdown in the order they appear in this file.
 # ─────────────────────────────────────────────────────────────────────────────
-code,name,region,region_label,division,div_code,psa,classification
+code,name,region,region_label,division,div_code,psa,hwp,ciu,classification
 # ── NORTH WEST METRO ─────────────────────────────────────────────────────────
 # Melbourne (ND1)
-TBC,Station TBC,N,North West Metro,Melbourne (ND1),ND1,,suburban
+TBC,Station TBC,N,North West Metro,Melbourne (ND1),ND1,,,,suburban
 # Westgate (ND2)
-TBC,Station TBC,N,North West Metro,Westgate (ND2),ND2,,suburban
+TBC,Station TBC,N,North West Metro,Westgate (ND2),ND2,,,,suburban
 # Brimbank (ND3)
-TBC,Station TBC,N,North West Metro,Brimbank (ND3),ND3,,suburban
+TBC,Station TBC,N,North West Metro,Brimbank (ND3),ND3,,,,suburban
 # Fawkner (ND4)
-TBC,Station TBC,N,North West Metro,Fawkner (ND4),ND4,,suburban
+TBC,Station TBC,N,North West Metro,Fawkner (ND4),ND4,,,,suburban
 # Diamond Creek (ND5)
-TBC,Station TBC,N,North West Metro,Diamond Creek (ND5),ND5,,suburban
+TBC,Station TBC,N,North West Metro,Diamond Creek (ND5),ND5,,,,suburban
 # ── SOUTHERN METRO ───────────────────────────────────────────────────────────
 # Prahran (SD1)
-TBC,Station TBC,S,Southern Metro,Prahran (SD1),SD1,,suburban
+TBC,Station TBC,S,Southern Metro,Prahran (SD1),SD1,,,,suburban
 # Moorabbin (SD2)
-TBC,Station TBC,S,Southern Metro,Moorabbin (SD2),SD2,,suburban
+TBC,Station TBC,S,Southern Metro,Moorabbin (SD2),SD2,,,,suburban
 # Dandenong (SD3)
-TBC,Station TBC,S,Southern Metro,Dandenong (SD3),SD3,,suburban
+TBC,Station TBC,S,Southern Metro,Dandenong (SD3),SD3,,,,suburban
 # Frankston (SD4)
-TBC,Station TBC,S,Southern Metro,Frankston (SD4),SD4,,suburban
+TBC,Station TBC,S,Southern Metro,Frankston (SD4),SD4,,,,suburban
 # ── EASTERN ──────────────────────────────────────────────────────────────────
 # Nunawading (ED1)
-TBC,Station TBC,E,Eastern,Nunawading (ED1),ED1,,suburban
+TBC,Station TBC,E,Eastern,Nunawading (ED1),ED1,,,,suburban
 # Knox (ED2)
-TBC,Station TBC,E,Eastern,Knox (ED2),ED2,,suburban
+TBC,Station TBC,E,Eastern,Knox (ED2),ED2,,,,suburban
 # Goulburn Valley (ED3)
-ESP,Shepparton,E,Eastern,Goulburn Valley (ED3),ED3,ESP,regional
+ESP,Shepparton,E,Eastern,Goulburn Valley (ED3),ED3,ESP,ESP,ESP,regional
 # Wangaratta (ED4)
-EWT,Wangaratta,E,Eastern,Wangaratta (ED4),ED4,EWT,regional
+EWT,Wangaratta,E,Eastern,Wangaratta (ED4),ED4,EWT,EWT,EWT,regional
 # Morwell (ED5)
-TBC,Station TBC,E,Eastern,Morwell (ED5),ED5,,suburban
+TBC,Station TBC,E,Eastern,Morwell (ED5),ED5,,,,suburban
 # Bairnsdale (ED6)
-TBC,Station TBC,E,Eastern,Bairnsdale (ED6),ED6,,suburban
+TBC,Station TBC,E,Eastern,Bairnsdale (ED6),ED6,,,,suburban
 # ── WESTERN ──────────────────────────────────────────────────────────────────
 # Geelong (WD1)
-TBC,Station TBC,W,Western,Geelong (WD1),WD1,,suburban
+TBC,Station TBC,W,Western,Geelong (WD1),WD1,,,,suburban
 # Warrnambool (WD2)
-TBC,Station TBC,W,Western,Warrnambool (WD2),WD2,,suburban
+TBC,Station TBC,W,Western,Warrnambool (WD2),WD2,,,,suburban
 # Ballarat (WD3)
-TBC,Station TBC,W,Western,Ballarat (WD3),WD3,,suburban
+TBC,Station TBC,W,Western,Ballarat (WD3),WD3,,,,suburban
 # Horsham (WD4)
-TBC,Station TBC,W,Western,Horsham (WD4),WD4,,suburban
+TBC,Station TBC,W,Western,Horsham (WD4),WD4,,,,suburban
 # Bendigo (WD5)
-TBC,Station TBC,W,Western,Bendigo (WD5),WD5,,suburban
+TBC,Station TBC,W,Western,Bendigo (WD5),WD5,,,,suburban
 # Mildura (WD6)
-TBC,Station TBC,W,Western,Mildura (WD6),WD6,,suburban
+TBC,Station TBC,W,Western,Mildura (WD6),WD6,,,,suburban
