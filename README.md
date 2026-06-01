@@ -7,3 +7,5 @@
 • Remove the MS, AS amd NS tags from the cars in the output.
 
 • Seperate State Highway Patrol bikes and cars from Highway Patrol.
+
+• Add a script.js file to take some load off of index.html
