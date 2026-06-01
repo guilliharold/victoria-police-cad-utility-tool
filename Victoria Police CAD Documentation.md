@@ -18,12 +18,12 @@ This document provides a simplified reference for CAD callsigns, unit classifica
 | 290–292 | PACER / MHaP |
 | 300–399 | Divisional Vans |
 | 400–449 | Regional Response Units (RRU) |
-| 450–499 | SOCIT |
-| 480–499 | FVIU |
-| 500–599 | Criminal Investigation Units (CIU) |
+| 450–499 | Sexual Offences and Child Abuse Investigation Team (SOCIT) |
+| 480–499 | Family Violence Investigation Unit (FVIU) |
+| 500–599 | Crime Investigation Unit (CIU) |
 | 600–699 | Highway Patrol |
 | 700–899 | District Support Services |
-| 900–999 | Stations, Point Duty & Control Positions |
+| 900–999 | Stations, Point Duty and Control Positions |
 
 ---
 
@@ -32,12 +32,12 @@ This document provides a simplified reference for CAD callsigns, unit classifica
 | Prefix | Unit |
 |----------|----------|
 | PSO | Protective Services Officers |
-| CAB | Police & Ambulance Triage Team |
+| CAB | Police and Ambulance Triage Team |
 | CAN | Canine Unit |
 | CIR | Critical Incident Response Team (CIRT) |
 | MAR | Marine Unit |
-| POR | PORT |
-| RES | Search & Rescue |
+| POR | Public Order Response Team (PORT) |
+| RES | Search and Rescue Squad |
 | ROA | Heavy Vehicle Investigation Unit |
 | TST | Transit Police |
 | TRF | State Highway Patrol / Traffic Operations |
@@ -79,7 +79,7 @@ This document provides a simplified reference for CAD callsigns, unit classifica
 
 # 4. General Patrol Vehicle Allocation
 
-## Sedans
+## Station Cars
 | Callsign | Typical Shift |
 |-----------|--------------|
 | 207 | Day Shift |
@@ -244,13 +244,3 @@ Responsibilities:
 | C8 | On Call From Home |
 | C9 | Member in Trouble |
 | C11 | En Route |
-
----
-
-# Recommended Improvements
-
-1. Separate metropolitan, suburban, regional and specialist allocations into individual documents.
-2. Move station backing arrangements into tables rather than free text.
-3. Standardise abbreviations and spelling.
-4. Remove duplicate unit descriptions.
-5. Maintain one master callsign index and one operational procedures guide rather than combining both.
