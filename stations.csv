@@ -88,23 +88,23 @@ TBC,Station TBC,E,Eastern,Nunawading (ED1),ED1,,,,metro_24
 # Knox (ED2)
 TBC,Station TBC,E,Eastern,Knox (ED2),ED2,,,,metro_24
 # Goulburn Valley (ED3)
-ESP,Shepparton,E,Eastern,Goulburn Valley (ED3),ED3,ESP,ESP,ESP,metro_24
+ESP,Shepparton,E,Eastern,Goulburn Valley (ED3),ED3,ESP,ESP,ESP,regional_24
 # Wangaratta (ED4)
-TBC,Station TBC,E,Eastern,Wangaratta (ED4),ED4,,,,metro_24
+EWT,Wangaratta,E,Eastern,Wangaratta (ED4),ED4,EWT,EWT,EWT,regional_24
 # Morwell (ED5)
-TBC,Station TBC,E,Eastern,Morwell (ED5),ED5,,,,metro_24
+TBC,Station TBC,E,Eastern,Morwell (ED5),ED5,,,,regional_24
 # Bairnsdale (ED6)
-TBC,Station TBC,E,Eastern,Bairnsdale (ED6),ED6,,,,metro_24
+TBC,Station TBC,E,Eastern,Bairnsdale (ED6),ED6,,,,regional_24
 # ── WESTERN ──────────────────────────────────────────────────────────────────
 # Geelong (WD1)
-TBC,Station TBC,W,Western,Geelong (WD1),WD1,,,,metro_24
+TBC,Station TBC,W,Western,Geelong (WD1),WD1,,,,regional_24
 # Warrnambool (WD2)
-TBC,Station TBC,W,Western,Warrnambool (WD2),WD2,,,,metro_24
+TBC,Station TBC,W,Western,Warrnambool (WD2),WD2,,,,regional_24
 # Ballarat (WD3)
-TBC,Station TBC,W,Western,Ballarat (WD3),WD3,,,,metro_24
+TBC,Station TBC,W,Western,Ballarat (WD3),WD3,,,,regional_24
 # Horsham (WD4)
-TBC,Station TBC,W,Western,Horsham (WD4),WD4,,,,metro_24
+TBC,Station TBC,W,Western,Horsham (WD4),WD4,,,,regional_24
 # Bendigo (WD5)
-TBC,Station TBC,W,Western,Bendigo (WD5),WD5,,,,metro_24
+TBC,Station TBC,W,Western,Bendigo (WD5),WD5,,,,regional_24
 # Mildura (WD6)
-TBC,Station TBC,W,Western,Mildura (WD6),WD6,,,,metro_24
+TBC,Station TBC,W,Western,Mildura (WD6),WD6,,,,regional_24
