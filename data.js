@@ -85,7 +85,8 @@ const SERVICES = [
   { id: 'cars',    icon: '🚗', name: 'Station Cars',             desc: 'General duties sedans. 200–299.' },
   { id: 'vans',    icon: '🚐', name: 'Divisional Vans',          desc: 'Cage vans for prisoner transport. 300–399.' },
   { id: 'hwp',     icon: '🏍️', name: 'Highway Patrol',           desc: 'Traffic enforcement & accident response. 600–699.' },
-  { id: 'port',    icon: '🛡️', name: 'PORT / Dist. Support',     desc: 'Public Order Response & support units. 700–799.' },
+  { id: 'port',    icon: '🛡️', name: 'PORT',                      desc: 'Public Order Response Team. POR prefix, 600–899.' },
+  { id: 'dss',     icon: '🔰', name: 'District Support Services',  desc: 'Support & special duties units. Station code, 700–899.' },
   { id: 'ciu',     icon: '🔍', name: 'CIU',                      desc: 'Criminal Investigation Unit. 500–599.' },
   { id: 'fviu',    icon: '🏠', name: 'FVIU',                     desc: 'Family Violence Investigation Unit. 480–499.' },
   { id: 'socit',   icon: '👶', name: 'SOCIT',                    desc: 'Sexual Offences & Child Investigations. 450–499.' },
@@ -94,7 +95,8 @@ const SERVICES = [
   { id: 'pacer',   icon: '🧠', name: 'PACER / MHaP',             desc: 'Mental health co-response. 290–292.' },
   { id: 'sar',     icon: '🔦', name: 'Search & Rescue (RES)',     desc: 'Search & rescue. RES prefix, 400–459.' },
   { id: 'transit', icon: '🚆', name: 'Transit Police (TST)',      desc: 'Public transport policing. TST prefix.' },
-  { id: 'sog',     icon: '🦅', name: 'SOG / CIRT',               desc: 'Special Operations / CIRT. SCY/CIR prefix.' },
+  { id: 'sog',     icon: '🦅', name: 'SOG',                       desc: 'Special Operations Group. SCY prefix.' },
+  { id: 'cirt',    icon: '🎯', name: 'CIRT',                      desc: 'Critical Incident Response Team. CIR prefix, 200–899.' },
   { id: 'polair',  icon: '🚁', name: 'POLAIR',                   desc: 'Air wing — helicopters & fixed wing.' },
   { id: 'hviu',    icon: '🚛', name: 'Heavy Vehicle Unit (ROA)',  desc: 'Heavy vehicle enforcement. ROA prefix.' },
   { id: 'mounted', icon: '🐴', name: 'Mounted Branch (MOU)',      desc: 'Mounted unit. MOU prefix, 800–899.' },
@@ -111,15 +113,15 @@ const SERVICES = [
 // regional_24   — Regional, 24-hour hub station (e.g. Bendigo, Geelong)
 // regional_non24— Regional, non-24-hour station (e.g. Bright, Yarrawonga)
 const DEFAULTS = {
-  metro_24:      { cars: 10, vans: 4, hwp: 5, ciu: 4, port: 5, rru: 3 },
-  metro_non24:   { cars: 7,  vans: 3, hwp: 4,  ciu: 3,  port: 2,  rru: 2 },
-  regional_24:   { cars: 5,  vans: 2, hwp: 3,  ciu: 2,  port: 1,  rru: 1 },
-  regional_non24:{ cars: 2,  vans: 1, hwp: 2,  ciu: 1,  port: 0,  rru: 0 },
+  metro_24:      { cars: 12, vans: 6, hwp: 11, ciu: 10, dss: 12, rru: 5 },
+  metro_non24:   { cars: 7,  vans: 3, hwp: 5,  ciu: 5,  dss: 6,  rru: 3 },
+  regional_24:   { cars: 9,  vans: 4, hwp: 8,  ciu: 7,  dss: 8,  rru: 4 },
+  regional_non24:{ cars: 3,  vans: 2, hwp: 2,  ciu: 2,  dss: 2,  rru: 2 },
 };
 
 // Maximum units each scalable service pool can produce.
 // Should match the pool sizes in the builders below.
-const MAX_UNITS = { cars: 15, vans: 6, hwp: 11, ciu: 10, port: 12, rru: 5 };
+const MAX_UNITS = { cars: 15, vans: 6, hwp: 11, ciu: 10, dss: 12, rru: 5 };
 
 
 // =============================================================================
@@ -173,21 +175,31 @@ function buildVanPool(c) {
 }
 
 function buildHWPPool(c) {
-  // Patrol cars interleaved by shift; specialty roles appended in fixed order
-  const cars_ms = shuffle([612, 613].map(n => ({ cs: c + n, desc: 'HWP Marked Car', shifts: ['MS'] })));
-  const cars_as = shuffle([617].map(n =>        ({ cs: c + n, desc: 'HWP Marked Car', shifts: ['AS', 'NS'] })));
-  const cars_ns = shuffle([618].map(n =>        ({ cs: c + n, desc: 'HWP Marked Car', shifts: ['NS'] })));
-  const core = interleave(cars_ms, cars_as, cars_ns);
-  const extra = [
+  // Pool is ordered so that at any slider count there is a sensible mix.
+  // Positions 1–3: one marked car per shift (MS, AS, NS)
+  // Position 4:    Q Car (unmarked) — guaranteed when count >= 4
+  // Positions 5+:  second marked car per shift, motorcycle, SGT, S/SGT, base
+  const ms_cars = shuffle([612, 613].map(n => ({ cs: c + n, desc: 'HWP Marked Car',           shifts: ['MS'] })));
+  const as_cars = shuffle([617, 619].map(n => ({ cs: c + n, desc: 'HWP Marked Car',           shifts: ['AS'] })));
+  const ns_cars = shuffle([618, 614].map(n => ({ cs: c + n, desc: 'HWP Marked Car',           shifts: ['NS'] })));
+
+  // First three slots: one per shift (interleaved)
+  const firstThree = [ms_cars[0], as_cars[0], ns_cars[0]];
+  // Fourth slot: Q Car — present whenever count >= 4
+  const qCar = { cs: c + shuffle([630, 631, 632])[0], desc: 'HWP Q Car (unmarked)', shifts: ['MS', 'AS'] };
+  // Remaining slots: second marked cars, motorcycle, supervisors, base
+  const rest = [
+    ms_cars[1],
+    as_cars[1],
+    ns_cars[1],
     { cs: c + '600', desc: 'HWP Solo Motorcycle',      shifts: ['MS', 'AS'] },
     { cs: c + '601', desc: 'HWP Solo Motorcycle',      shifts: ['AS'] },
-    { cs: c + '630', desc: 'HWP Q Car (unmarked)',      shifts: ['MS', 'AS'] },
     { cs: c + '650', desc: 'HWP Sergeant',             shifts: ['MS', 'AS'] },
     { cs: c + '651', desc: 'HWP Sergeant',             shifts: ['NS'] },
     { cs: c + '661', desc: 'HWP Senior Sergeant',      shifts: ['MS'] },
     { cs: c + '906', desc: 'HWP Base Station (fixed)', shifts: ['FIXED'] },
   ];
-  return core.concat(extra);
+  return [...firstThree, qCar, ...rest];
 }
 
 function buildCIUPool(c) {
@@ -201,9 +213,24 @@ function buildCIUPool(c) {
   return interleave(ms, as, ns, fixed);
 }
 
-function buildPORTPool(c) {
-  const ms    = shuffle([700, 710, 750].map(n => ({ cs: c + n, desc: 'Special Duties',                        shifts: ['MS', 'AS'] })));
-  const as    = shuffle([730, 731].map(n =>       ({ cs: c + n, desc: 'Special Events / Emergency Response',  shifts: ['AS', 'NS'] })));
+// PORT uses the POR prefix (not station code) — range 600–899
+function buildPORTPool() {
+  const ms = shuffle([601, 602, 603].map(n => ({ cs: 'POR' + n, desc: 'PORT Unit — General duties', shifts: ['MS', 'AS'] })));
+  const as = shuffle([610, 611, 612].map(n => ({ cs: 'POR' + n, desc: 'PORT Unit — General duties', shifts: ['AS', 'NS'] })));
+  const ns = shuffle([620, 621].map(n =>       ({ cs: 'POR' + n, desc: 'PORT Unit — General duties', shifts: ['NS'] })));
+  const fixed = [
+    { cs: 'POR650', desc: 'PORT Sergeant',       shifts: ['MS', 'AS'] },
+    { cs: 'POR651', desc: 'PORT Sergeant',        shifts: ['NS'] },
+    { cs: 'POR660', desc: 'PORT Senior Sergeant', shifts: ['MS'] },
+    { cs: 'POR700', desc: 'PORT Base (fixed)',    shifts: ['FIXED'] },
+  ];
+  return interleave(ms, as, ns, fixed);
+}
+
+// District Support Services uses station code — range 700–899
+function buildDSSPool(c) {
+  const ms    = shuffle([700, 710, 750].map(n => ({ cs: c + n, desc: 'Special Duties',                       shifts: ['MS', 'AS'] })));
+  const as    = shuffle([730, 731].map(n =>       ({ cs: c + n, desc: 'Special Events / Emergency Response', shifts: ['AS', 'NS'] })));
   const mixed = shuffle([740, 741, 745, 780].map(n => ({
     cs: c + n,
     desc: n === 740 || n === 741 ? 'Foot Patrol' : n === 745 ? 'Licensing Unit' : 'Bicycle Patrol',
