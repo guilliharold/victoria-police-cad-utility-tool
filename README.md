@@ -1,29 +1,21 @@
 ## Station Classifications
 
-### Metropolitan
-Located within Victoria's highest-density urban environments, Metropolitan Police Stations serve major population centres, central business districts, entertainment precincts, transport hubs, and critical infrastructure.
+### Metropolitan (24 Hours)
+Metropolitan police stations providing continuous 24/7 operational policing coverage within high-density urban areas. These stations support rapid response capability, manage high call volumes, and typically service large suburban populations. They function as core nodes within the metropolitan policing network and often coordinate with nearby stations for incident response and specialist tasking.
 
-These stations operate around the clock and manage a high volume of incidents including violent crime, public order events, traffic operations, emergency management, and specialist policing activities. Metropolitan stations often house multiple operational units, supervisory staff, investigative teams, and specialist resources, serving as key command locations within the Melbourne metropolitan area.
+Examples: Box Hill, Dandenong, Melbourne West, Sunshine and Werribee
 
-Examples: Melbourne East, Melbourne West, Richmond, Southbank, St. Kilda, etc.
+### Metropolitan (Non-24 Hours)
+Metropolitan or inner-urban stations that maintain ongoing policing coverage through patrol structures but do not provide continuous 24-hour public counter or on-site station staffing. Operational response is still maintained 24/7 via nearby hub stations or patrol units. These stations generally focus on community engagement, local reporting services, and daytime/front-counter operations.
 
-### Suburban
-Suburban Police Stations provide frontline policing services to established residential, commercial, and mixed-use communities across Melbourne's outer and middle suburbs.
+Examples: Brunswick, Epping, Mornington, Rowville and Springvale
 
-These stations handle a diverse range of incidents including family violence, property crime, traffic enforcement, community engagement, and local investigations. While smaller than major metropolitan facilities, suburban stations maintain strong operational capabilities and frequently support neighbouring divisions during significant incidents and planned operations.
+### Regional (24 Hours)
+Regional police stations that provide continuous 24/7 operational coverage across large geographic areas outside metropolitan Melbourne. These stations act as key regional hubs, often supporting surrounding smaller towns and rural communities. They typically manage a broad range of policing functions including general duties, traffic enforcement, and incident response coordination.
 
-Examples: Box Hill, Dandenong, Frankston, Ringwood, Sunshine, etc.
+Examples: Bendigo, Geelong, Morwell, Swan Hill and Warragul
 
-### Regional
-Regional Police Stations serve as primary policing hubs for Victoria's major regional cities and surrounding districts. In addition to providing frontline response services, these stations often coordinate policing activities across multiple surrounding towns and rural communities.
+### Regional (Non-24 Hours)
+Regional or rural stations that maintain continuous policing coverage through mobile patrols and nearby hub stations but do not operate a full-time staffed station or 24-hour public counter. These stations primarily provide local access points for reporting, community engagement, and visible police presence, while operational response is coordinated from larger nearby regional hubs.
 
-Regional stations commonly accommodate investigative units, highway patrol resources, crime management personnel, and divisional support functions. Due to their geographic coverage, officers may respond to incidents across large operational areas and diverse environments.
-
-Examples: Geelong, Bendigo, Ballarat, Mildura, Shepparton, Wodonga, etc.
-
-### Rural
-Rural Police Stations provide essential policing services to small towns, agricultural communities, and remote localities throughout Victoria. Typically staffed by a smaller complement of officers, these stations maintain close relationships with local residents, businesses, emergency services, and community organisations.
-
-Rural officers often perform a broad range of duties, including general policing, traffic enforcement, emergency management, search and rescue support, and community engagement. Due to the distances involved, officers may operate independently and cover extensive geographic areas.
-
-Examples: Cobram, Dimboola, Inglewood, Numurkah, Tallangatta, Yarrawonga, etc.
+Examples: Bright, Echuca, Horsham, Portland and Yarrawonga
