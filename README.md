@@ -1,7 +1,5 @@
 # Victoria Police CAD Tool
 
-> A web-based application designed to generate semi-realistic Victoria Police CAD codes and identifiers various stations throughout Victoria.
-
 ## Station Classifications
 
 ### Metropolitan (24 Hours)
