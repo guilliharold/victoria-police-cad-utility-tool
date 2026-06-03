@@ -1,0 +1,225 @@
+// =============================================================================
+// data.js — VicPol CAD Lineup Generator
+// Static data: region/station structure, service definitions, unit pool
+// builders, and default unit counts.
+//
+// To add stations:        edit stations.csv (loaded at runtime by app.js)
+// To add a service type:  add an entry to SERVICES and a block in app.js
+// To adjust unit counts:  edit DEFAULTS below
+// =============================================================================
+
+
+// =============================================================================
+// REGION DATA — structural fallback template
+// Real station entries are populated at runtime from stations.csv.
+// Inline entries use the pipe format: CODE|Name|DivCode|PSA|HWP|CIU|classification
+// =============================================================================
+const REGION_DATA = {
+  N: {
+    label: 'North West Metro',
+    divisions: {
+      'Melbourne (ND1)':     ['TBC|Station TBC|ND1||||suburban', 'TBC|Station TBC|ND1||||suburban'],
+      'Westgate (ND2)':      ['TBC|Station TBC|ND2||||suburban', 'TBC|Station TBC|ND2||||suburban'],
+      'Brimbank (ND3)':      ['TBC|Station TBC|ND3||||suburban', 'TBC|Station TBC|ND3||||suburban'],
+      'Fawkner (ND4)':       ['TBC|Station TBC|ND4||||suburban', 'TBC|Station TBC|ND4||||suburban'],
+      'Diamond Creek (ND5)': ['TBC|Station TBC|ND5||||suburban', 'TBC|Station TBC|ND5||||suburban'],
+    }
+  },
+  S: {
+    label: 'Southern Metro',
+    divisions: {
+      'Prahran (SD1)':   ['TBC|Station TBC|SD1||||suburban', 'TBC|Station TBC|SD1||||suburban'],
+      'Moorabbin (SD2)': ['TBC|Station TBC|SD2||||suburban', 'TBC|Station TBC|SD2||||suburban'],
+      'Dandenong (SD3)': ['TBC|Station TBC|SD3||||suburban', 'TBC|Station TBC|SD3||||suburban'],
+      'Frankston (SD4)': ['TBC|Station TBC|SD4||||suburban', 'TBC|Station TBC|SD4||||suburban'],
+    }
+  },
+  E: {
+    label: 'Eastern',
+    divisions: {
+      'Nunawading (ED1)':      ['TBC|Station TBC|ED1||||suburban', 'TBC|Station TBC|ED1||||suburban'],
+      'Knox (ED2)':            ['TBC|Station TBC|ED2||||suburban', 'TBC|Station TBC|ED2||||suburban'],
+      'Goulburn Valley (ED3)': ['TBC|Station TBC|ED3||||suburban', 'TBC|Station TBC|ED3||||suburban'],
+      'Wangaratta (ED4)':      ['TBC|Station TBC|ED4||||suburban', 'TBC|Station TBC|ED4||||suburban'],
+      'Morwell (ED5)':         ['TBC|Station TBC|ED5||||suburban', 'TBC|Station TBC|ED5||||suburban'],
+      'Bairnsdale (ED6)':      ['TBC|Station TBC|ED6||||suburban', 'TBC|Station TBC|ED6||||suburban'],
+    }
+  },
+  W: {
+    label: 'Western',
+    divisions: {
+      'Geelong (WD1)':     ['TBC|Station TBC|WD1||||suburban', 'TBC|Station TBC|WD1||||suburban'],
+      'Warrnambool (WD2)': ['TBC|Station TBC|WD2||||suburban', 'TBC|Station TBC|WD2||||suburban'],
+      'Ballarat (WD3)':    ['TBC|Station TBC|WD3||||suburban', 'TBC|Station TBC|WD3||||suburban'],
+      'Horsham (WD4)':     ['TBC|Station TBC|WD4||||suburban', 'TBC|Station TBC|WD4||||suburban'],
+      'Bendigo (WD5)':     ['TBC|Station TBC|WD5||||suburban', 'TBC|Station TBC|WD5||||suburban'],
+      'Mildura (WD6)':     ['TBC|Station TBC|WD6||||suburban', 'TBC|Station TBC|WD6||||suburban'],
+    }
+  }
+};
+
+// Parse a pipe-delimited station entry string into a station object.
+// Format: CODE|Name|DivCode|PSA|HWP|CIU|classification
+function parseStation(s) {
+  const p = s.split('|');
+  return {
+    code:           p[0] || '',
+    name:           p[1] || '',
+    div:            p[2] || '',
+    psa:            p[3] || '',
+    hwp:            p[4] || '',
+    ciu:            p[5] || '',
+    classification: p[6] || 'suburban',
+  };
+}
+
+
+// =============================================================================
+// SERVICES — available unit types shown in step 2
+// id:   unique key used throughout the app
+// icon: emoji shown in the service selection grid
+// name: display label
+// desc: short description shown under the name
+// =============================================================================
+const SERVICES = [
+  { id: 'cars',    icon: '🚗', name: 'Station Cars',             desc: 'General duties sedans. 200–299.' },
+  { id: 'vans',    icon: '🚐', name: 'Divisional Vans',          desc: 'Cage vans for prisoner transport. 300–399.' },
+  { id: 'hwp',     icon: '🏍️', name: 'Highway Patrol',           desc: 'Traffic enforcement & accident response. 600–699.' },
+  { id: 'port',    icon: '🛡️', name: 'PORT / Dist. Support',     desc: 'Public Order Response & support units. 700–799.' },
+  { id: 'ciu',     icon: '🔍', name: 'CIU',                      desc: 'Criminal Investigation Unit. 500–599.' },
+  { id: 'fviu',    icon: '🏠', name: 'FVIU',                     desc: 'Family Violence Investigation Unit. 480–499.' },
+  { id: 'socit',   icon: '👶', name: 'SOCIT',                    desc: 'Sexual Offences & Child Investigations. 450–499.' },
+  { id: 'rru',     icon: '⚡', name: 'RRU',                      desc: 'Regional Response Unit. 440–449.' },
+  { id: 'dog',     icon: '🐕', name: 'Dog Squad (CAN)',           desc: 'Canine unit. Uses CAN prefix.' },
+  { id: 'pacer',   icon: '🧠', name: 'PACER / MHaP',             desc: 'Mental health co-response. 290–292.' },
+  { id: 'sar',     icon: '🔦', name: 'Search & Rescue (RES)',     desc: 'Search & rescue. RES prefix, 400–459.' },
+  { id: 'transit', icon: '🚆', name: 'Transit Police (TST)',      desc: 'Public transport policing. TST prefix.' },
+  { id: 'sog',     icon: '🦅', name: 'SOG / CIRT',               desc: 'Special Operations / CIRT. SCY/CIR prefix.' },
+  { id: 'polair',  icon: '🚁', name: 'POLAIR',                   desc: 'Air wing — helicopters & fixed wing.' },
+  { id: 'hviu',    icon: '🚛', name: 'Heavy Vehicle Unit (ROA)',  desc: 'Heavy vehicle enforcement. ROA prefix.' },
+  { id: 'mounted', icon: '🐴', name: 'Mounted Branch (MOU)',      desc: 'Mounted unit. MOU prefix, 800–899.' },
+];
+
+
+// =============================================================================
+// DEFAULT UNIT COUNTS — per classification, per scalable service
+// Adjust these to change how many units are generated by default.
+// Users can always override with the sliders on the output page.
+// =============================================================================
+const DEFAULTS = {
+  metropolitan: { cars: 12, vans: 6, hwp: 11, ciu: 10, port: 12, rru: 5 },
+  suburban:     { cars: 7,  vans: 3, hwp: 5,  ciu: 5,  port: 6,  rru: 3 },
+  regional:     { cars: 9,  vans: 4, hwp: 8,  ciu: 7,  port: 8,  rru: 4 },
+  rural:        { cars: 3,  vans: 2, hwp: 2,  ciu: 2,  port: 2,  rru: 2 },
+};
+
+// Maximum units each scalable service pool can produce.
+// Should match the pool sizes in the builders below.
+const MAX_UNITS = { cars: 15, vans: 6, hwp: 11, ciu: 10, port: 12, rru: 5 };
+
+
+// =============================================================================
+// HELPERS — used by pool builders
+// =============================================================================
+
+// Fisher-Yates in-place shuffle. Returns the same array.
+function shuffle(arr) {
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
+// Interleave three shift buckets into MS → AS → NS → MS → AS → NS order.
+// 'fixed' items are always appended at the end, unchanged.
+function interleave(ms, as, ns, fixed = []) {
+  const out = [];
+  const max = Math.max(ms.length, as.length, ns.length);
+  for (let i = 0; i < max; i++) {
+    if (i < ms.length) out.push(ms[i]);
+    if (i < as.length) out.push(as[i]);
+    if (i < ns.length) out.push(ns[i]);
+  }
+  return out.concat(fixed);
+}
+
+
+// =============================================================================
+// UNIT POOL BUILDERS
+// Each function builds the full pool for a given scalable service.
+// Numbers within each shift bucket are shuffled on every call so each
+// generation produces a different but valid lineup.
+// The interleaved MS → AS → NS ordering is always preserved so the slider
+// gives a balanced spread across all shifts at any count.
+// =============================================================================
+
+function buildCarPool(c) {
+  const ms = shuffle([201, 204, 207, 208, 205].map(n => ({ cs: c + n, desc: 'Station Car — Morning shift (0700)',   shifts: ['MS'] })));
+  const as = shuffle([203, 206, 209, 202, 210].map(n => ({ cs: c + n, desc: 'Station Car — Afternoon shift (1500)', shifts: ['AS'] })));
+  const ns = shuffle([211, 214, 217, 212, 215].map(n => ({ cs: c + n, desc: 'Station Car — Night shift (2300)',     shifts: ['NS'] })));
+  return interleave(ms, as, ns);
+}
+
+function buildVanPool(c) {
+  const ms = shuffle([307, 308].map(n => ({ cs: c + n, desc: 'Divisional Van — Morning shift (0700)',   shifts: ['MS'] })));
+  const as = shuffle([303, 304].map(n => ({ cs: c + n, desc: 'Divisional Van — Afternoon shift (1500)', shifts: ['AS'] })));
+  const ns = shuffle([311, 312].map(n => ({ cs: c + n, desc: 'Divisional Van — Night shift (2300)',     shifts: ['NS'] })));
+  return interleave(ms, as, ns);
+}
+
+function buildHWPPool(c) {
+  // Patrol cars interleaved by shift; specialty roles appended in fixed order
+  const cars_ms = shuffle([612, 613].map(n => ({ cs: c + n, desc: 'HWP Marked Car', shifts: ['MS'] })));
+  const cars_as = shuffle([617].map(n =>        ({ cs: c + n, desc: 'HWP Marked Car', shifts: ['AS', 'NS'] })));
+  const cars_ns = shuffle([618].map(n =>        ({ cs: c + n, desc: 'HWP Marked Car', shifts: ['NS'] })));
+  const core = interleave(cars_ms, cars_as, cars_ns);
+  const extra = [
+    { cs: c + '600', desc: 'HWP Solo Motorcycle',      shifts: ['MS', 'AS'] },
+    { cs: c + '601', desc: 'HWP Solo Motorcycle',      shifts: ['AS'] },
+    { cs: c + '630', desc: 'HWP Q Car (unmarked)',      shifts: ['MS', 'AS'] },
+    { cs: c + '650', desc: 'HWP Sergeant',             shifts: ['MS', 'AS'] },
+    { cs: c + '651', desc: 'HWP Sergeant',             shifts: ['NS'] },
+    { cs: c + '661', desc: 'HWP Senior Sergeant',      shifts: ['MS'] },
+    { cs: c + '906', desc: 'HWP Base Station (fixed)', shifts: ['FIXED'] },
+  ];
+  return core.concat(extra);
+}
+
+function buildCIUPool(c) {
+  const ms = shuffle([507, 508].map(n =>        ({ cs: c + n, desc: 'CIU — Morning shift',   shifts: ['MS'] })));
+  const as = shuffle([503, 504, 520].map(n =>   ({ cs: c + n, desc: 'CIU — Afternoon shift', shifts: ['AS'] })));
+  const ns = shuffle([541, 542, 543].map(n =>   ({ cs: c + n, desc: 'CIU — Night shift',     shifts: ['NS'] })));
+  const fixed = [
+    { cs: c + '550', desc: 'CIU Night Supervisor',     shifts: ['NS'] },
+    { cs: c + '905', desc: 'CIU Base Station (fixed)', shifts: ['FIXED'] },
+  ];
+  return interleave(ms, as, ns, fixed);
+}
+
+function buildPORTPool(c) {
+  const ms    = shuffle([700, 710, 750].map(n => ({ cs: c + n, desc: 'Special Duties',                        shifts: ['MS', 'AS'] })));
+  const as    = shuffle([730, 731].map(n =>       ({ cs: c + n, desc: 'Special Events / Emergency Response',  shifts: ['AS', 'NS'] })));
+  const mixed = shuffle([740, 741, 745, 780].map(n => ({
+    cs: c + n,
+    desc: n === 740 || n === 741 ? 'Foot Patrol' : n === 745 ? 'Licensing Unit' : 'Bicycle Patrol',
+    shifts: n === 741 ? ['AS'] : ['MS', 'AS'],
+  })));
+  const fixed = [
+    { cs: c + '783', desc: 'Court Security Guard',                       shifts: ['MS', 'AS'] },
+    { cs: c + '785', desc: 'Hospital Guard',                             shifts: ['MS', 'AS', 'NS'] },
+    { cs: c + '920', desc: 'DOSO — District Operational Support Office', shifts: ['MS'] },
+  ];
+  return interleave(ms, as, mixed, fixed);
+}
+
+function buildRRUPool(c) {
+  const ms = [{ cs: c + '440', desc: 'RRU — Morning shift',   shifts: ['MS'] }];
+  const as = [{ cs: c + '441', desc: 'RRU — Afternoon shift', shifts: ['AS'] }];
+  const ns = [{ cs: c + '442', desc: 'RRU — Night shift',     shifts: ['NS'] }];
+  const fixed = [
+    { cs: c + '443', desc: 'RRU — Additional unit',        shifts: ['MS', 'AS'] },
+    { cs: c + '904', desc: 'RRU Base Station (fixed)',      shifts: ['FIXED'] },
+  ];
+  return interleave(ms, as, ns, fixed);
+}
