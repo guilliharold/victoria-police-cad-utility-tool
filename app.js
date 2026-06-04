@@ -344,15 +344,11 @@ function buildOutput() {
     },
     {
       id: 'hwp', icon: '🚔', name: 'Highway Patrol', pool: buildHWPPool(c),
-      note: `Local Highway Patrol uses the station code prefix. Marked cars 610–629, Q Cars (unmarked) 630–639 — the pool alternates every two marked cars with one unmarked. SGT 650–659, S/SGT 660–669. Fixed base at ${c}906. Motorcycles are a State Highway Patrol function — select <strong>State Highway Patrol Solo</strong> separately.`,
+      note: `Local Highway Patrol uses the station code prefix. Marked cars 610–629, Q Cars (unmarked) 630–639 — roughly one Q Car for every two marked cars. Solo motorcycle (600–609) is station-based but uncommon; it appears only at higher unit counts. SGT 650–659, S/SGT 660–669. Fixed base at ${c}906.`,
     },
     {
-      id: 'shp', icon: '🚓', name: 'State Highway Patrol', pool: buildSHPPool(),
-      note: `State Highway Patrol uses the <strong>SHP</strong> prefix — not the station code. Marked cars 610–629, Q Cars (unmarked) 630–639, SGT 650–659, S/SGT 660–669. State HWP units operate across broader areas and are not station-specific.`,
-    },
-    {
-      id: 'shp_solo', icon: '🏍️', name: 'State Highway Patrol Solo', pool: buildSHPSoloPool(),
-      note: `State Highway Patrol Solo (motorcycle) units use the <strong>SHP</strong> prefix, range 600–609. Solo units patrol independently and are deployed for high-visibility traffic enforcement operations.`,
+      id: 'trf', icon: '🚓', name: 'State Highway Patrol', pool: buildTRFPool(),
+      note: `State Highway Patrol uses the <strong>TRF</strong> prefix. Marked cars 610–629, Q Cars (unmarked) 630–639 follow the same 2-marked-to-1-unmarked ratio. Solo motorcycles (TRF600–609) are included in the same pool and appear at higher unit counts — adjust the slider to include or exclude them. SGT 650–659, S/SGT 660–669. Base TRF906.`,
     },
     {
       id: 'ciu', icon: '🔍', name: 'CIU', pool: buildCIUPool(c),
