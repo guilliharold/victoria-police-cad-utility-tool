@@ -123,7 +123,7 @@ const DEFAULTS = {
 
 // Maximum units each scalable service pool can produce.
 // Should match the pool sizes in the builders below.
-const MAX_UNITS = { cars: 15, vans: 6, hwp: 12, trf: 16, ciu: 10, dss: 12, rru: 5 };
+const MAX_UNITS = { cars: 15, vans: 6, hwp: 12, trf: 12, ciu: 10, dss: 12, rru: 5 };
 
 
 // =============================================================================
@@ -176,61 +176,48 @@ function buildVanPool(c) {
   return interleave(ms, as, ns);
 }
 
+// buildHWPPool — returns patrol units only (no supervisors, no solos).
+// Supervisors are injected into Command & Supervision at generation time.
+// Solo units are appended separately if the user opts in.
+// Pool pattern: marked(MS), marked(AS), marked(NS), Q(any), repeat.
+// At any slider count this gives exactly 1 Q car per 3 marked cars.
 function buildHWPPool(c) {
-  // Pool order: marked cars and Q cars interleaved (2 marked : 1 Q), then
-  // solo motorcycle last — rare so it only appears at higher counts.
-  // Supervisors and base always fixed at the very end.
-  const ms_cars = shuffle([611, 612, 613, 614].map(n => ({ cs: c + n, desc: 'HWP Marked Car',         shifts: ['MS'] })));
-  const as_cars = shuffle([616, 617, 618, 619].map(n => ({ cs: c + n, desc: 'HWP Marked Car',         shifts: ['AS'] })));
-  const ns_cars = shuffle([621, 622, 623, 624].map(n => ({ cs: c + n, desc: 'HWP Marked Car',         shifts: ['NS'] })));
-  const q_cars  = shuffle([630, 631, 632, 633].map(n => ({ cs: c + n, desc: 'HWP Q Car (unmarked)',   shifts: ['MS', 'AS'] })));
-
-  // 2-marked-then-1-Q pattern per group
-  const pool = [
-    ms_cars[0], as_cars[0], ns_cars[0], q_cars[0],   // 1–4
-    ms_cars[1], as_cars[1], ns_cars[1], q_cars[1],   // 5–8
-    ms_cars[2], as_cars[2], ns_cars[2], q_cars[2],   // 9–12
+  const ms = shuffle([611, 612, 613, 614].map(n => ({ cs: c + n, desc: 'HWP Marked Car',       shifts: ['MS'] })));
+  const as = shuffle([616, 617, 618, 619].map(n => ({ cs: c + n, desc: 'HWP Marked Car',       shifts: ['AS'] })));
+  const ns = shuffle([621, 622, 623, 624].map(n => ({ cs: c + n, desc: 'HWP Marked Car',       shifts: ['NS'] })));
+  const q  = shuffle([630, 631, 632, 633].map(n => ({ cs: c + n, desc: 'HWP Q Car (unmarked)', shifts: ['MS', 'AS'] })));
+  // Strict 3-marked-then-1-Q pattern: MS, AS, NS, Q, MS, AS, NS, Q ...
+  return [
+    ms[0], as[0], ns[0], q[0],
+    ms[1], as[1], ns[1], q[1],
+    ms[2], as[2], ns[2], q[2],
   ];
-
-  // Solo motorcycle — deprioritised, only appears at counts > 12
-  const solo = shuffle([600, 601]).map(n => ({ cs: c + n, desc: 'HWP Solo Motorcycle', shifts: ['MS', 'AS'] }));
-
-  const fixed = [
-    { cs: c + '650', desc: 'HWP Sergeant',             shifts: ['MS', 'AS'] },
-    { cs: c + '651', desc: 'HWP Sergeant',             shifts: ['NS'] },
-    { cs: c + '661', desc: 'HWP Senior Sergeant',      shifts: ['MS'] },
-    { cs: c + '906', desc: 'HWP Base Station (fixed)', shifts: ['FIXED'] },
-  ];
-  return [...pool, ...solo, ...fixed];
 }
 
-// State Highway Patrol (TRF prefix) — marked cars, Q cars, solos and supervisors.
-// Combines both car and solo motorcycle units under the TRF identifier.
-// Solos (TRF600–609) are deprioritised — appear at counts > 12.
+// HWP solo — built separately; appended only when user opts in
+function buildHWPSoloUnits(c) {
+  return shuffle([600, 601]).map(n => ({ cs: c + n, desc: 'HWP Solo Motorcycle', shifts: ['MS', 'AS'] }));
+}
+
+// buildTRFPool — patrol units only (no supervisors, no solos).
+// Same 3-marked-then-1-Q pattern as HWP for consistency.
 function buildTRFPool() {
-  const ms_cars = shuffle([611, 612, 613, 614].map(n => ({ cs: 'TRF' + n, desc: 'State Highway Patrol — Marked Car',       shifts: ['MS'] })));
-  const as_cars = shuffle([616, 617, 618, 619].map(n => ({ cs: 'TRF' + n, desc: 'State Highway Patrol — Marked Car',       shifts: ['AS'] })));
-  const ns_cars = shuffle([621, 622, 623, 624].map(n => ({ cs: 'TRF' + n, desc: 'State Highway Patrol — Marked Car',       shifts: ['NS'] })));
-  const q_cars  = shuffle([630, 631, 632, 633].map(n => ({ cs: 'TRF' + n, desc: 'State Highway Patrol — Q Car (unmarked)', shifts: ['MS', 'AS'] })));
-
-  const pool = [
-    ms_cars[0], as_cars[0], ns_cars[0], q_cars[0],   // 1–4
-    ms_cars[1], as_cars[1], ns_cars[1], q_cars[1],   // 5–8
-    ms_cars[2], as_cars[2], ns_cars[2], q_cars[2],   // 9–12
+  const ms = shuffle([611, 612, 613, 614].map(n => ({ cs: 'TRF' + n, desc: 'State Highway Patrol — Marked Car',       shifts: ['MS'] })));
+  const as = shuffle([616, 617, 618, 619].map(n => ({ cs: 'TRF' + n, desc: 'State Highway Patrol — Marked Car',       shifts: ['AS'] })));
+  const ns = shuffle([621, 622, 623, 624].map(n => ({ cs: 'TRF' + n, desc: 'State Highway Patrol — Marked Car',       shifts: ['NS'] })));
+  const q  = shuffle([630, 631, 632, 633].map(n => ({ cs: 'TRF' + n, desc: 'State Highway Patrol — Q Car (unmarked)', shifts: ['MS', 'AS'] })));
+  return [
+    ms[0], as[0], ns[0], q[0],
+    ms[1], as[1], ns[1], q[1],
+    ms[2], as[2], ns[2], q[2],
   ];
+}
 
-  // Solo motorcycles — deprioritised, appear at counts > 12
-  const solos = shuffle([600, 601, 602, 603]).map(n => ({
+// TRF solo — built separately; appended only when user opts in
+function buildTRFSoloUnits() {
+  return shuffle([600, 601, 602, 603]).map(n => ({
     cs: 'TRF' + n, desc: 'State Highway Patrol Solo — Motorcycle', shifts: ['MS', 'AS'],
   }));
-
-  const fixed = [
-    { cs: 'TRF650', desc: 'State Highway Patrol — Sergeant',        shifts: ['MS', 'AS'] },
-    { cs: 'TRF651', desc: 'State Highway Patrol — Sergeant',        shifts: ['NS'] },
-    { cs: 'TRF661', desc: 'State Highway Patrol — Senior Sergeant', shifts: ['MS'] },
-    { cs: 'TRF906', desc: 'State Highway Patrol Base (fixed)',       shifts: ['FIXED'] },
-  ];
-  return [...pool, ...solos, ...fixed];
 }
 
 function buildCIUPool(c) {
