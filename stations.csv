@@ -92,6 +92,7 @@ TBC,Station TBC,E,Eastern,Nunawading (ED1),ED1,,,,metro_24
 # Knox (ED2)
 TBC,Station TBC,E,Eastern,Knox (ED2),ED2,,,,metro_24
 # Goulburn Valley (ED3)
+ESP,Shepparton,E,Eastern,Goulburn Valley (ED3),ED3,ESP,ESP,ESP,regional_non24
 ESP,Shepparton,E,Eastern,Goulburn Valley (ED3),ED3,ESP,ESP,ESP,regional_24
 # Wangaratta (ED4)
 EWT,Wangaratta,E,Eastern,Wangaratta (ED4),ED4,EWT,EWT,EWT,regional_24
