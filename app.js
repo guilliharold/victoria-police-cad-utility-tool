@@ -214,30 +214,22 @@ function onStation() {
   }
 }
 
-function updateSoloToggles() {
-  const wrap = document.getElementById('soloToggles');
-  if (!wrap) return;
-  wrap.innerHTML = '';
+// Refresh the open/closed state of all sub-panels based on current selection.
+// Called whenever a service is toggled.
+function updateSubPanels() {
+  document.querySelectorAll('.svc-subpanel').forEach(panel => {
+    const parentId = panel.dataset.parent;
+    panel.classList.toggle('open', S.selected.has(parentId));
+  });
+}
 
-  const makeToggle = (id, label, stateKey) => {
-    const row = document.createElement('div');
-    row.style.cssText = 'display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:7px;cursor:pointer;user-select:none;';
-    const checked = S[stateKey];
-    row.innerHTML = `
-      <div style="width:18px;height:18px;border-radius:3px;border:2px solid ${checked ? 'var(--blue)' : 'var(--border)'};background:${checked ? 'var(--blue)' : 'transparent'};display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;flex-shrink:0;">${checked ? '✓' : ''}</div>
-      <div>
-        <div style="font-family:var(--head);font-size:13px;font-weight:600;letter-spacing:0.5px;">🏍️ ${label}</div>
-        <div style="font-size:12px;color:var(--mid);margin-top:2px;">Include solo motorcycle units in this service's lineup</div>
-      </div>`;
-    row.onclick = () => {
-      S[stateKey] = !S[stateKey];
-      updateSoloToggles();
-    };
-    wrap.appendChild(row);
-  };
-
-  if (S.selected.has('hwp')) makeToggle('hwp', 'HWP Solo Motorcycle', 'hwpSolo');
-  if (S.selected.has('trf')) makeToggle('trf', 'State Highway Patrol Solo Motorcycle', 'trfSolo');
+// Rebuild a single sub-option's visual state (checked/unchecked).
+function refreshSubOption(stateKey) {
+  const el = document.querySelector(`.svc-suboption[data-key="${stateKey}"]`);
+  if (!el) return;
+  const on = !!S[stateKey];
+  el.classList.toggle('on', on);
+  el.querySelector('.svc-subcheck').textContent = on ? '✓' : '';
 }
 
 function goStep2() {
@@ -264,11 +256,40 @@ function goStep2() {
 // =============================================================================
 // STEP 2 — SERVICE SELECTION
 // =============================================================================
+// Sub-panel definitions — services that have additional options shown inline.
+// Each entry: the parent service id, a header label, and an array of options.
+// Each option: stateKey (on S), icon, name, desc.
+const SUBPANELS = {
+  hwp: {
+    label: 'Highway Patrol — Additional Options',
+    options: [
+      {
+        stateKey: 'hwpSolo',
+        icon: '🏍️',
+        name: 'Include Solo Motorcycle',
+        desc: 'Adds station-based HWP solo motorcycle unit(s) to the lineup.',
+      },
+    ],
+  },
+  trf: {
+    label: 'State Highway Patrol — Additional Options',
+    options: [
+      {
+        stateKey: 'trfSolo',
+        icon: '🏍️',
+        name: 'Include Solo Motorcycle',
+        desc: 'Adds State Highway Patrol solo motorcycle unit(s) to the lineup.',
+      },
+    ],
+  },
+};
+
 function buildServiceGrid() {
   const g = document.getElementById('svcGrid');
   g.innerHTML = '';
 
   SERVICES.forEach(sv => {
+    // Main service card
     const el = document.createElement('div');
     el.className = 'svc-item' + (S.selected.has(sv.id) ? ' on' : '');
     el.dataset.id = sv.id;
@@ -288,18 +309,47 @@ function buildServiceGrid() {
         el.classList.add('on');
         el.querySelector('.svc-check').textContent = '✓';
       }
-      // Show/hide solo toggles when HWP or TRF selection changes
-      updateSoloToggles();
+      updateSubPanels();
     };
     g.appendChild(el);
-  });
 
-  // Solo motorcycle toggles — appear below the service grid when HWP/TRF selected
-  const soloWrap = document.createElement('div');
-  soloWrap.id = 'soloToggles';
-  soloWrap.style.cssText = 'grid-column: 1 / -1; display: flex; flex-direction: column; gap: 8px; margin-top: 4px;';
-  g.parentElement.appendChild(soloWrap);
-  updateSoloToggles();
+    // Inline sub-panel (only for services that have one defined)
+    if (SUBPANELS[sv.id]) {
+      const def = SUBPANELS[sv.id];
+      const panel = document.createElement('div');
+      panel.className = 'svc-subpanel' + (S.selected.has(sv.id) ? ' open' : '');
+      panel.dataset.parent = sv.id;
+
+      // Build option rows
+      const optionsHtml = def.options.map(opt => `
+        <div class="svc-suboption${S[opt.stateKey] ? ' on' : ''}" data-key="${opt.stateKey}">
+          <div class="svc-subcheck">${S[opt.stateKey] ? '✓' : ''}</div>
+          <div>
+            <div class="svc-suboption-name">${opt.icon} ${opt.name}</div>
+            <div class="svc-suboption-desc">${opt.desc}</div>
+          </div>
+        </div>`).join('');
+
+      panel.innerHTML = `
+        <div class="svc-subpanel-head">
+          <span class="svc-subpanel-head-icon">⚙</span>
+          <span class="svc-subpanel-head-label">${def.label}</span>
+        </div>
+        <div class="svc-subpanel-body">${optionsHtml}</div>`;
+
+      // Wire up click handlers for each option
+      panel.querySelectorAll('.svc-suboption').forEach(optEl => {
+        optEl.onclick = (e) => {
+          e.stopPropagation(); // don't bubble to service card
+          const key = optEl.dataset.key;
+          S[key] = !S[key];
+          refreshSubOption(key);
+        };
+      });
+
+      g.appendChild(panel);
+    }
+  });
 }
 
 
