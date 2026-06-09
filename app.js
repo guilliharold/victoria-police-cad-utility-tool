@@ -289,6 +289,12 @@ function buildServiceGrid() {
   g.innerHTML = '';
 
   SERVICES.forEach(sv => {
+    // Each service lives in a wrapper that occupies exactly one grid cell.
+    // The sub-panel stacks below the card inside the wrapper — never in
+    // the grid itself — so it can't push other cards out of position.
+    const wrapper = document.createElement('div');
+    wrapper.className = 'svc-wrapper';
+
     // Main service card
     const el = document.createElement('div');
     el.className = 'svc-item' + (S.selected.has(sv.id) ? ' on' : '');
@@ -311,16 +317,15 @@ function buildServiceGrid() {
       }
       updateSubPanels();
     };
-    g.appendChild(el);
+    wrapper.appendChild(el);
 
-    // Inline sub-panel (only for services that have one defined)
+    // Sub-panel sits inside the wrapper, below the card (not in the grid)
     if (SUBPANELS[sv.id]) {
       const def = SUBPANELS[sv.id];
       const panel = document.createElement('div');
       panel.className = 'svc-subpanel' + (S.selected.has(sv.id) ? ' open' : '');
       panel.dataset.parent = sv.id;
 
-      // Build option rows
       const optionsHtml = def.options.map(opt => `
         <div class="svc-suboption${S[opt.stateKey] ? ' on' : ''}" data-key="${opt.stateKey}">
           <div class="svc-subcheck">${S[opt.stateKey] ? '✓' : ''}</div>
@@ -337,18 +342,19 @@ function buildServiceGrid() {
         </div>
         <div class="svc-subpanel-body">${optionsHtml}</div>`;
 
-      // Wire up click handlers for each option
       panel.querySelectorAll('.svc-suboption').forEach(optEl => {
         optEl.onclick = (e) => {
-          e.stopPropagation(); // don't bubble to service card
+          e.stopPropagation();
           const key = optEl.dataset.key;
           S[key] = !S[key];
           refreshSubOption(key);
         };
       });
 
-      g.appendChild(panel);
+      wrapper.appendChild(panel);
     }
+
+    g.appendChild(wrapper);
   });
 }
 
