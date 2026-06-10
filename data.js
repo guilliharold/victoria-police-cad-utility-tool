@@ -92,15 +92,13 @@ const SERVICES = [
   { id: 'fviu',    icon: '🏠', name: 'FVIU',                     desc: 'Family Violence Investigation Unit. 480–499.' },
   { id: 'socit',   icon: '👶', name: 'SOCIT',                    desc: 'Sexual Offences & Child Investigations. 450–499.' },
   { id: 'rru',     icon: '⚡', name: 'RRU',                      desc: 'Regional Response Unit. 440–449.' },
-  { id: 'dog',     icon: '🐕', name: 'Dog Squad (CAN)',           desc: 'Canine unit. Uses CAN prefix.' },
-  { id: 'pacer',   icon: '🧠', name: 'PACER / MHaP',             desc: 'Mental health co-response. 290–292.' },
-  { id: 'sar',     icon: '🔦', name: 'Search & Rescue (RES)',     desc: 'Search & rescue. RES prefix, 400–459.' },
-  { id: 'transit', icon: '🚆', name: 'Transit Police (TST)',      desc: 'Public transport policing. TST prefix.' },
+  { id: 'dog',     icon: '🐕', name: 'Dog Squad',           desc: 'Canine unit. Uses CAN prefix.' },
+  { id: 'sar',     icon: '🔦', name: 'Search & Rescue',     desc: 'Search & rescue. RES prefix, 400–459.' },
   { id: 'sog',     icon: '🦅', name: 'SOG',                       desc: 'Special Operations Group. SCY prefix.' },
   { id: 'cirt',    icon: '🎯', name: 'CIRT',                      desc: 'Critical Incident Response Team. CIR prefix, 200–899.' },
-  { id: 'polair',  icon: '🚁', name: 'POLAIR',                   desc: 'Air wing — helicopters & fixed wing.' },
-  { id: 'hviu',    icon: '🚛', name: 'Heavy Vehicle Unit (ROA)',  desc: 'Heavy vehicle enforcement. ROA prefix.' },
-  { id: 'mounted', icon: '🐴', name: 'Mounted Branch (MOU)',      desc: 'Mounted unit. MOU prefix, 800–899.' },
+  { id: 'polair',  icon: '🚁', name: 'Air Wing',                   desc: 'Helicopters and fixed wing aircraft.' },
+  { id: 'hviu',    icon: '🚛', name: 'Heavy Vehicle Unit',  desc: 'Heavy vehicle enforcement. ROA prefix.' },
+  { id: 'mounted', icon: '🐴', name: 'Mounted Branch',      desc: 'Mounted unit. MOU prefix, 800–899.' },
 ];
 
 
