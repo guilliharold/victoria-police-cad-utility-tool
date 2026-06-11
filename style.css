@@ -823,120 +823,26 @@ input[type="range"] {
 
 
 /* =============================================================================
-   19. SERVICE SUB-PANEL (solo motorcycle options)
-   Opens inline beneath a service card when that service is selected.
-   Spans the full grid width via grid-column: 1 / -1.
+   19. SOLO SERVICE CARDS
+   Injected into the service grid immediately after Highway Patrol or
+   State Highway Patrol when that service is selected. Styled with a
+   dashed border and slightly muted palette to signal they are child options
+   rather than standalone top-level services.
    ============================================================================= */
 
-/* Wrapper — occupies exactly one grid cell.
-   Card and sub-panel stack vertically inside it.
-   align-self: start stops the wrapper stretching to match taller neighbours. */
-.svc-wrapper {
-  display: flex;
-  flex-direction: column;
-  align-self: start;
-}
-
-.svc-subpanel {
-  display: none;
-}
-
-.svc-subpanel.open {
-  display: block;
+.svc-item--solo {
+  border-style: dashed;
+  border-color: var(--border);
   background: var(--surface2);
-  border: 1px solid var(--border);
-  border-radius: 7px;
-  overflow: hidden;
-  margin-top: 6px;
-  animation: subpanelOpen 0.2s ease;
 }
 
-@keyframes subpanelOpen {
-  from { opacity: 0; transform: translateY(-4px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-.svc-subpanel-head {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  padding: 8px 14px 6px;
-  border-bottom: 1px solid var(--border);
-}
-
-.svc-subpanel-head-label {
-  font-family: var(--mono);
-  font-size: 10px;
-  font-weight: 700;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  color: var(--dim);
-}
-
-.svc-subpanel-head-icon {
-  font-size: 11px;
-  color: var(--dim);
-}
-
-.svc-subpanel-body {
-  padding: 10px 12px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-/* Individual toggle option inside the sub-panel */
-.svc-suboption {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 9px 12px;
-  background: var(--surface);
-  border: 2px solid var(--border);
-  border-radius: 7px;
-  cursor: pointer;
-  user-select: none;
-  transition: border-color 0.15s, background 0.15s;
-}
-
-.svc-suboption:hover {
+.svc-item--solo:hover {
   border-color: var(--blue);
   background: #f0f5ff;
 }
 
-.svc-suboption.on {
+.svc-item--solo.on {
+  border-style: dashed;
   border-color: var(--blue);
   background: #e8f0fe;
-}
-
-.svc-suboption.on .svc-subcheck {
-  background: var(--blue);
-  border-color: var(--blue);
-}
-
-.svc-subcheck {
-  width: 16px;
-  height: 16px;
-  border-radius: 3px;
-  border: 2px solid var(--border);
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  color: #fff;
-  font-size: 10px;
-  transition: all 0.15s;
-}
-
-.svc-suboption-name {
-  font-family: var(--head);
-  font-size: 13px;
-  font-weight: 600;
-  letter-spacing: 0.5px;
-}
-
-.svc-suboption-desc {
-  font-size: 11px;
-  color: var(--mid);
-  margin-top: 1px;
 }
