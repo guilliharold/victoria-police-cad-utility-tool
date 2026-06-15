@@ -1,0 +1,115 @@
+# VicPol CAD Lineup Generator — Station Data
+# ─────────────────────────────────────────────────────────────────────────────
+# HOW TO USE THIS FILE
+#
+# Fill in one row per station. Lines starting with # are ignored.
+# The header row must stay exactly as written.
+#
+# COLUMNS
+#   code           Station callsign prefix. Uppercase, 2–5 characters.
+#                  Format: [Region letter] + [Station abbreviation]
+#                  e.g.  E + SP = ESP (Eastern, Shepparton)
+#                        W + BI = WBI (Western, Bendigo)
+#                        N + MN = NMN (North West Metro, Melbourne North)
+#
+#   name           Station display name. Do not include "Police Station".
+#
+#   region         Single region key letter — must match one of:
+#                  N = North West Metro
+#                  S = Southern Metro
+#                  E = Eastern
+#                  W = Western
+#
+#   region_label   Full region name shown in the tool (e.g. "Eastern").
+#
+#   division       Division name shown in the dropdown.
+#                  Stations with the same division value are grouped together.
+#                  Use the format "Division Name (DivCode)" e.g. "Goulburn Valley (ED3)"
+#
+#   div_code       Short division reference code (e.g. ED3, WD1).
+#                  Used for internal reference only — not shown in the tool.
+#
+#   psa            Code of the Police Service Area station covering this station.
+#                  Leave blank if unknown or not applicable.
+#
+#   hwp            Code of the Highway Patrol unit that services this station.
+#                  Leave blank if unknown or not applicable.
+#
+#   ciu            Code of the Crime Investigation Unit that services this station.
+#                  Leave blank if unknown or not applicable.
+#
+#   classification Station type. Must be exactly one of:
+#
+#                  metro_24       = Metropolitan, 24-hour continuous coverage
+#                                   High-density urban, high call volume, full staffing around the clock
+#                                   e.g. Box Hill, Dandenong, Melbourne West, Sunshine, Werribee
+#
+#                  metro_non24    = Metropolitan, non-24-hour public counter
+#                                   Ongoing patrol coverage but no continuous on-site staffing
+#                                   e.g. Brunswick, Epping, Mornington, Rowville, Springvale
+#
+#                  regional_24    = Regional, 24-hour continuous coverage
+#                                   Key regional hub supporting surrounding towns and rural communities
+#                                   e.g. Bendigo, Geelong, Morwell, Swan Hill, Warragul
+#
+#                  regional_non24 = Regional, non-24-hour public counter
+#                                   Coverage via mobile patrols and nearby hub station support
+#                                   e.g. Bright, Echuca, Horsham, Portland, Yarrawonga
+#
+#                  regional_single  = Regional, non-24-hour, single officer station
+#                                   One officer, one vehicle (station car or divisional van only)
+#                                   e.g. Dookie, Elmore, Katamatite, Sea Lake, Tungamah
+#
+# NOTES
+#   • Leave a field blank rather than writing N/A or — (just keep the comma).
+#   • classification controls how many units the tool generates by default.
+#   • Stations appear in the dropdown in the order they appear in this file.
+# ─────────────────────────────────────────────────────────────────────────────
+code,name,region,region_label,division,div_code,psa,hwp,ciu,classification
+# ── NORTH WEST METRO ─────────────────────────────────────────────────────────
+# Melbourne (ND1)
+TBC,Station TBC,N,North West Metro,Melbourne (ND1),ND1,,,,metro_24
+# Westgate (ND2)
+TBC,Station TBC,N,North West Metro,Westgate (ND2),ND2,,,,metro_24
+# Brimbank (ND3)
+TBC,Station TBC,N,North West Metro,Brimbank (ND3),ND3,,,,metro_24
+# Fawkner (ND4)
+TBC,Station TBC,N,North West Metro,Fawkner (ND4),ND4,,,,metro_24
+# Diamond Creek (ND5)
+TBC,Station TBC,N,North West Metro,Diamond Creek (ND5),ND5,,,,metro_24
+# ── SOUTHERN METRO ───────────────────────────────────────────────────────────
+# Prahran (SD1)
+TBC,Station TBC,S,Southern Metro,Prahran (SD1),SD1,,,,metro_24
+# Moorabbin (SD2)
+TBC,Station TBC,S,Southern Metro,Moorabbin (SD2),SD2,,,,metro_24
+# Dandenong (SD3)
+TBC,Station TBC,S,Southern Metro,Dandenong (SD3),SD3,,,,metro_24
+# Frankston (SD4)
+TBC,Station TBC,S,Southern Metro,Frankston (SD4),SD4,,,,metro_24
+# ── EASTERN ──────────────────────────────────────────────────────────────────
+# Nunawading (ED1)
+TBC,Station TBC,E,Eastern,Nunawading (ED1),ED1,,,,metro_24
+# Knox (ED2)
+TBC,Station TBC,E,Eastern,Knox (ED2),ED2,,,,metro_24
+# Goulburn Valley (ED3)
+EMP,Mooroopna,E,Eastern,Goulburn Valley (ED3),ED3,ESP,ESP,ESP,regional_non24
+ESP,Shepparton,E,Eastern,Goulburn Valley (ED3),ED3,ESP,ESP,ESP,regional_24
+# Wangaratta (ED4)
+EWT,Wangaratta,E,Eastern,Wangaratta (ED4),ED4,EWT,EWT,EWT,regional_24
+# Morwell (ED5)
+TBC,Station TBC,E,Eastern,Morwell (ED5),ED5,,,,metro_24
+# Bairnsdale (ED6)
+TBC,Station TBC,E,Eastern,Bairnsdale (ED6),ED6,,,,metro_24
+# ── WESTERN ──────────────────────────────────────────────────────────────────
+# Geelong (WD1)
+WGL,Geelong,W,Western,Geelong (WD1),WD1,WGL,WGL,WGL,regional_24
+# Warrnambool (WD2)
+WWR,Warrnambool,W,Western,Warrnambool (WD2),WD2,WWR,WWR,WWR,regional_24
+# Ballarat (WD3)
+WBW,Ballarat West,W,Western,Ballarat (WD3),WD3,WBW,WBW,WBW,regional_24
+# Horsham (WD4)
+WHM,Horsham,W,Western,Horsham (WD4),WD4,WHM,WHM,WHM,regional_24
+# Bendigo (WD5)
+WBI,Bendigo,W,Western,Bendigo (WD5),WD5,WBI,WBI,WBI,regional_24
+# Mildura (WD6)
+WML,Mildura,W,Western,Mildura (WD6),WD6,WML,WML,WML,regional_24

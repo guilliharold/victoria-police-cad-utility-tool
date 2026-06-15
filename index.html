@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>VicPol CAD Lineup Generator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;500;700&family=Oswald:wght@400;500;600;700&family=Source+Sans+3:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="site-header">
+  <div class="hdr-badge">⭐ Victoria Police</div>
+  <div class="hdr-title"><strong>CAD</strong> Lineup Generator</div>
+  <div class="hdr-right" id="clock">--:--:--</div>
+</header>
+
+<div class="wrap">
+
+  <!-- Step tabs -->
+  <div class="steps">
+    <button class="step-btn active" id="tab1"><div class="num">1</div>Station</button>
+    <button class="step-btn"        id="tab2"><div class="num">2</div>Services</button>
+    <button class="step-btn"        id="tab3"><div class="num">3</div>Lineup</button>
+  </div>
+
+  <!-- ── Step 1: Station selection ──────────────────────────── -->
+  <div class="panel show" id="p1">
+
+    <div class="card">
+      <div class="card-head"><div class="dot"></div>Select Station</div>
+      <div class="card-body">
+        <div class="fg fg-3">
+          <div class="field">
+            <label>Region</label>
+            <select id="selRegion" onchange="onRegion()">
+              <option value="">— Select —</option>
+              <option value="N">North West Metro</option>
+              <option value="S">Southern Metro</option>
+              <option value="E">Eastern</option>
+              <option value="W">Western</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Division</label>
+            <select id="selDiv" onchange="onDiv()" disabled>
+              <option value="">— Select Region first —</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Station</label>
+            <select id="selStation" onchange="onStation()" disabled>
+              <option value="">— Select Division first —</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="card" id="roleCard" style="display:none">
+      <div class="card-head"><div class="dot"></div>Station Classification</div>
+      <div class="card-body">
+        <div class="fg fg-2">
+          <div class="field">
+            <label>Classification</label>
+            <select id="knownRole">
+              <option value="metro_24" selected>Metropolitan (24 Hours)</option>
+              <option value="metro_non24">Metropolitan (Non-24 Hours)</option>
+              <option value="regional_24">Regional (24 Hours)</option>
+              <option value="regional_non24">Regional (Non-24 Hours)</option>
+              <option value="regional_single">Regional (Single Member)</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Supervisor Required</label>
+            <select id="superRequired">
+              <option value="yes" selected>Yes</option>
+              <option value="no">No</option>
+            </select>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-primary" onclick="goStep2()">Next — Select Services →</button>
+    </div>
+
+  </div><!-- /p1 -->
+
+  <!-- ── Step 2: Service selection ──────────────────────────── -->
+  <div class="panel" id="p2">
+
+    <div class="card">
+      <div class="card-head"><div class="dot"></div>Select Services / Units</div>
+      <div class="card-body">
+        <div class="service-grid" id="svcGrid"></div>
+      </div>
+    </div>
+
+    <div class="btn-row">
+      <button class="btn btn-ghost" onclick="go(1)">← Back</button>
+      <button class="btn btn-gold"  onclick="generate()">Generate Lineup →</button>
+    </div>
+
+  </div><!-- /p2 -->
+
+  <!-- ── Step 3: Generated lineup ───────────────────────────── -->
+  <div class="panel" id="p3">
+
+    <div id="output"></div>
+
+    <div class="btn-row">
+      <button class="btn btn-ghost" onclick="go(2)">← Change Services</button>
+      <button class="btn btn-ghost" onclick="go(1)">↺ Start Over</button>
+    </div>
+
+  </div><!-- /p3 -->
+
+</div><!-- /wrap -->
+
+<!-- Scripts: data first, then app logic, then boot -->
+<script src="data.js"></script>
+<script src="app.js"></script>
+<script>loadCSV();</script>
+
+</body>
+</html>
