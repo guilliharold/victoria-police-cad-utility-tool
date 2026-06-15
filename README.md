@@ -1,6 +1,6 @@
 # Victoria Police CAD Tool
 
-A web-based tool for generating realistic Victoria Police CAD radio lineups for use in [MissionChief](https://www.missionchief-australia.com/) and similar emergency services simulation games. Built to reflect real VicPol operational structure, callsign numbering conventions, and station hierarchy.
+A web-based tool for generating semi-realistic Victoria Police CAD lineups for use in [MissionChief](https://www.missionchief-australia.com/) and similar emergency services simulation games. Built to reflect real Victoria Police operational structure, callsign numbering conventions, and station hierarchy.
 
 Hosted on GitHub Pages — no server, no login, no installation required.
 
