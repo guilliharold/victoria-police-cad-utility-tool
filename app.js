@@ -383,16 +383,16 @@ function buildOutput() {
       note: `State Highway Patrol uses the <strong>TRF</strong> prefix. Marked cars TRF610–629, Q Cars TRF630–639, SGT TRF650–659, S/SGT TRF660–669, Complaints TRF640–649, Special Duties TRF670–699. All unit types appear progressively as the slider increases. Base TRF906.`,
     },
     {
-      id: 'ciu', icon: '🔍', name: 'CIU', pool: buildCIUPool(c),
+      id: 'ciu', outputName: 'CIU (Criminal Investigation Unit)', icon: '🔍', name: 'CIU', pool: buildCIUPool(c),
       note: `CIU investigates serious crime. Morning: ${c}507. Afternoon: ${c}503/${c}520. Night: ${c}541–546 with supervisor at ${c}550. Fixed base at ${c}905.`,
     },
     {
-      id: 'port', icon: '🛡️', name: 'PORT', pool: buildPORTPool(),
+      id: 'port', outputName: 'PORT (Public Order Response Team)', icon: '🛡️', name: 'PORT', pool: buildPORTPool(),
       note: `PORT (Public Order Response Team) uses the <strong>POR</strong> prefix — not the station code. General units 600–649, SGT 650–659, S/SGT 660–669. POR units operate across the region and are not station-specific.`,
     },
 
     {
-      id: 'rru', icon: '⚡', name: 'RRU', pool: buildRRUPool(c),
+      id: 'rru', outputName: 'RRU (Regional Response Unit)', icon: '⚡', name: 'RRU', pool: buildRRUPool(c),
       note: `RRU (440–449) provides operational support, allocated to specific operations or tasks. Fixed base at ${c}904.`,
     },
   ];
@@ -419,7 +419,7 @@ function buildOutput() {
 
   // ── Fixed-size services ────────────────────────────────────────────────────
   if (S.selected.has('fviu')) sections.push({
-    id: 'fviu', icon: '🏠', name: 'FVIU', pool: null,
+    id: 'fviu', outputName: 'FVIU (Family Violence Investigation Unit)', icon: '🏠', name: 'FVIU', pool: null,
     units: [
       { cs: c + '480', desc: 'FVIU Sergeant',                 shifts: ['MS', 'AS'] },
       { cs: c + '487', desc: 'FVIU Unit — Morning shift',     shifts: ['MS'] },
@@ -432,7 +432,7 @@ function buildOutput() {
   });
 
   if (S.selected.has('socit')) sections.push({
-    id: 'socit', icon: '👶', name: 'SOCIT', pool: null,
+    id: 'socit', outputName: 'SOCIT (Sexual Offences & Child Investigations Team)', icon: '👶', name: 'SOCIT', pool: null,
     units: [
       { cs: 'REG477', desc: 'SOCIT Unit — Morning shift',   shifts: ['MS'] },
       { cs: 'REG473', desc: 'SOCIT Unit — Afternoon shift', shifts: ['AS'] },
@@ -444,7 +444,7 @@ function buildOutput() {
   });
 
   if (S.selected.has('dog')) sections.push({
-    id: 'dog', icon: '🐕', name: 'Dog Squad (CAN)', pool: null,
+    id: 'dog', outputName: 'CAN (Dog Squad)', icon: '🐕', name: 'Dog Squad (CAN)', pool: null,
     units: [
       { cs: 'CAN207', desc: 'Canine Unit — Morning shift',           shifts: ['MS'] },
       { cs: 'CAN203', desc: 'Canine Unit — Afternoon shift',         shifts: ['AS'] },
@@ -455,7 +455,7 @@ function buildOutput() {
   });
 
   if (S.selected.has('sar')) sections.push({
-    id: 'sar', icon: '🔦', name: 'Search & Rescue (RES)', pool: null,
+    id: 'sar', outputName: 'RES (Search & Rescue)', icon: '🔦', name: 'Search & Rescue (RES)', pool: null,
     units: [
       { cs: 'RES400', desc: 'SAR Unit — General',  shifts: ['MS', 'AS'] },
       { cs: 'RES410', desc: 'SAR Field Team',       shifts: ['MS', 'AS', 'NS'] },
@@ -465,7 +465,7 @@ function buildOutput() {
   });
 
   if (S.selected.has('sog')) sections.push({
-    id: 'sog', icon: '🦅', name: 'SOG (Special Operations Group)', pool: null,
+    id: 'sog', outputName: 'SOG (Special Operations Group)', icon: '🦅', name: 'SOG (Special Operations Group)', pool: null,
     units: [
       { cs: 'SCY200', desc: 'Special Operations Group Unit',            shifts: ['MS', 'AS', 'NS'] },
       { cs: 'SCY210', desc: 'Special Operations Group Unit',            shifts: ['MS', 'AS', 'NS'] },
@@ -475,7 +475,7 @@ function buildOutput() {
   });
 
   if (S.selected.has('cirt')) sections.push({
-    id: 'cirt', icon: '🎯', name: 'CIRT (Critical Incident Response Team)', pool: null,
+    id: 'cirt', outputName: 'CIRT (Critical Incident Response Team)', icon: '🎯', name: 'CIRT (Critical Incident Response Team)', pool: null,
     units: [
       { cs: 'CIR200', desc: 'CIRT Unit', shifts: ['MS', 'AS', 'NS'] },
       { cs: 'CIR210', desc: 'CIRT Unit', shifts: ['MS', 'AS', 'NS'] },
@@ -485,7 +485,7 @@ function buildOutput() {
   });
 
   if (S.selected.has('polair')) sections.push({
-    id: 'polair', icon: '🚁', name: 'Air Wing', pool: null,
+    id: 'polair', outputName: 'POLAIR (Air Wing)', icon: '🚁', name: 'Air Wing', pool: null,
     units: [
       { cs: 'POLAIR30', desc: 'Rotary Wing (Helicopter) — Primary',   shifts: ['MS', 'AS', 'NS'] },
       { cs: 'POLAIR31', desc: 'Rotary Wing (Helicopter) — Secondary', shifts: ['AS', 'NS'] },
@@ -497,7 +497,7 @@ function buildOutput() {
   });
 
   if (S.selected.has('hviu')) sections.push({
-    id: 'hviu', icon: '🚛', name: 'Heavy Vehicle Unit (ROA)', pool: null,
+    id: 'hviu', outputName: 'ROA (Heavy Vehicle Unit)', icon: '🚛', name: 'Heavy Vehicle Unit (ROA)', pool: null,
     units: [
       { cs: 'ROA501', desc: 'Heavy Vehicle Unit',       shifts: ['MS', 'AS'] },
       { cs: 'ROA503', desc: 'Heavy Vehicle Unit',       shifts: ['AS'] },
@@ -507,7 +507,7 @@ function buildOutput() {
   });
 
   if (S.selected.has('mounted')) sections.push({
-    id: 'mounted', icon: '🐴', name: 'Mounted Branch (MOU)', pool: null,
+    id: 'mounted', outputName: 'MOU (Mounted Branch)', icon: '🐴', name: 'Mounted Branch (MOU)', pool: null,
     units: [
       { cs: 'MOU800', desc: 'Mounted Unit — Primary',   shifts: ['MS', 'AS'] },
       { cs: 'MOU810', desc: 'Mounted Unit — Secondary', shifts: ['AS'] },
@@ -601,7 +601,7 @@ function renderOutput(code, role, roleLabel, sections) {
     blocksHtml += `<div class="svc-block">
       <div class="svc-block-head">
         <span class="svc-block-icon">${sec.icon}</span>
-        <span class="svc-block-name">${sec.name}</span>
+        <span class="svc-block-name">${sec.outputName || sec.name}</span>
         <span class="svc-block-count" id="sc-${sec.id}">${count} unit${count !== 1 ? 's' : ''}</span>
       </div>
       <div class="svc-block-body">
@@ -685,7 +685,7 @@ function buildExportText(code, role, roleLabel, sections) {
 
   sections.forEach(sec => {
     const count = sec.scalable ? (OVERRIDES[sec.id] || defaultCount(sec.id)) : sec.units.length;
-    exp += `${sec.name.toUpperCase()}\n`;
+    exp += `${(sec.outputName || sec.name).toUpperCase()}\n`;
     sec.units.slice(0, count).forEach(u => { exp += `  ${u.cs.padEnd(12)} ${u.desc}\n`; });
     exp += '\n';
   });
