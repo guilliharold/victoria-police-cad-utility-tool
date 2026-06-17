@@ -87,7 +87,6 @@ const SERVICES = [
   { id: 'hwp',     icon: '🚔', name: 'Highway Patrol',            desc: 'Local HWP — marked & unmarked cars. Station code, 610–669.' },
   { id: 'trf',     icon: '🚓', name: 'State Highway Patrol',      desc: 'State HWP — marked & unmarked cars. TRF prefix, 610–669.' },
   { id: 'port',    icon: '🛡️', name: 'PORT',                      desc: 'Public Order Response Team. POR prefix, 600–899.' },
-  { id: 'dss',     icon: '🔰', name: 'District Support Services',  desc: 'Support & special duties units. Station code, 700–899.' },
   { id: 'ciu',     icon: '🔍', name: 'CIU',                      desc: 'Criminal Investigation Unit. 500–599.' },
   { id: 'fviu',    icon: '🏠', name: 'FVIU',                     desc: 'Family Violence Investigation Unit. 480–499.' },
   { id: 'socit',   icon: '👶', name: 'SOCIT',                    desc: 'Sexual Offences & Child Investigations. 450–499.' },
@@ -262,23 +261,6 @@ function buildPORTPool() {
     { cs: 'POR700', desc: 'PORT Base (fixed)',    shifts: ['FIXED'] },
   ];
   return interleave(ms, as, ns, fixed);
-}
-
-// District Support Services uses station code — range 700–899
-function buildDSSPool(c) {
-  const ms    = shuffle([700, 710, 750].map(n => ({ cs: c + n, desc: 'Special Duties',                       shifts: ['MS', 'AS'] })));
-  const as    = shuffle([730, 731].map(n =>       ({ cs: c + n, desc: 'Special Events / Emergency Response', shifts: ['AS', 'NS'] })));
-  const mixed = shuffle([740, 741, 745, 780].map(n => ({
-    cs: c + n,
-    desc: n === 740 || n === 741 ? 'Foot Patrol' : n === 745 ? 'Licensing Unit' : 'Bicycle Patrol',
-    shifts: n === 741 ? ['AS'] : ['MS', 'AS'],
-  })));
-  const fixed = [
-    { cs: c + '783', desc: 'Court Security Guard',                       shifts: ['MS', 'AS'] },
-    { cs: c + '785', desc: 'Hospital Guard',                             shifts: ['MS', 'AS', 'NS'] },
-    { cs: c + '920', desc: 'DOSO — District Operational Support Office', shifts: ['MS'] },
-  ];
-  return interleave(ms, as, mixed, fixed);
 }
 
 function buildRRUPool(c) {
