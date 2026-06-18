@@ -374,12 +374,12 @@ function buildOutput() {
     },
     {
       id: 'hwp', icon: '🚔', name: 'Highway Patrol',
-      pool: S.selected.has('hwp_solo') ? [...buildHWPPool(c), ...buildHWPSoloUnits(c)] : buildHWPPool(c),
+      pool: buildHWPPool(c),
       note: `Local Highway Patrol uses the station code prefix. Marked cars 610–629, Q Cars 630–639 (1 per 3 marked). SGT 650–659 and S/SGT 660–669 appear at mid counts. Complaints 640–649 and Special Duties 670–699 at higher counts. Fixed base at ${c}906.`,
     },
     {
       id: 'trf', icon: '🚓', name: 'State Highway Patrol',
-      pool: S.selected.has('trf_solo') ? [...buildTRFPool(), ...buildTRFSoloUnits()] : buildTRFPool(),
+      pool: buildTRFPool(),
       note: `State Highway Patrol uses the <strong>TRF</strong> prefix. Marked cars TRF610–629, Q Cars TRF630–639, SGT TRF650–659, S/SGT TRF660–669, Complaints TRF640–649, Special Duties TRF670–699. All unit types appear progressively as the slider increases. Base TRF906.`,
     },
     {
