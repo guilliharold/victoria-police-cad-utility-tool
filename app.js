@@ -18,8 +18,7 @@ const S = {
   ciu:           '',
   role:          'metro_24',
   selected:      new Set(),
-  hwpSolo:       false,  // include HWP solo motorcycle units
-  trfSolo:       false,  // include TRF solo motorcycle units
+
 };
 
 // Per-service slider overrides (service id → unit count)
@@ -262,8 +261,8 @@ function buildServiceGrid() {
     el.onclick = () => {
       if (S.selected.has(sv.id)) {
         S.selected.delete(sv.id);
-        // Also clear and remove the solo card if the parent is deselected
-        if (SOLO_CARDS[sv.id]) S[SOLO_CARDS[sv.id].stateKey] = false;
+        // Also deselect the solo card if the parent is deselected
+        if (SOLO_CARDS[sv.id]) S.selected.delete(SOLO_CARDS[sv.id].id);
       } else {
         S.selected.add(sv.id);
       }
@@ -275,7 +274,7 @@ function buildServiceGrid() {
     // If this service is selected and has a solo card, inject it right after
     if (SOLO_CARDS[sv.id] && S.selected.has(sv.id)) {
       const solo   = SOLO_CARDS[sv.id];
-      const soloOn = !!S[solo.stateKey];
+      const soloOn = S.selected.has(solo.id);
       const soloEl = document.createElement('div');
       soloEl.className = 'svc-item svc-item--solo' + (soloOn ? ' on' : '');
       soloEl.dataset.id = solo.id;
@@ -285,9 +284,12 @@ function buildServiceGrid() {
           <div class="svc-name">${solo.icon} ${solo.name}</div>
         </div>`;
       soloEl.onclick = () => {
-        S[solo.stateKey] = !S[solo.stateKey];
-        soloEl.classList.toggle('on', S[solo.stateKey]);
-        soloEl.querySelector('.svc-check').textContent = S[solo.stateKey] ? '✓' : '';
+        if (S.selected.has(solo.id)) {
+          S.selected.delete(solo.id);
+        } else {
+          S.selected.add(solo.id);
+        }
+        buildServiceGrid();
       };
       g.appendChild(soloEl);
     }
