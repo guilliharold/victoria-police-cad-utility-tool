@@ -111,16 +111,16 @@ const SERVICES = [
 // regional_24   — Regional, 24-hour hub station (e.g. Bendigo, Geelong)
 // regional_non24— Regional, non-24-hour station (e.g. Bright, Yarrawonga)
 const DEFAULTS = {
-  metro_24:       { cars: 12, vans: 6, hwp: 10, trf: 10, ciu: 10, rru: 5 },
-  metro_non24:    { cars: 7,  vans: 3, hwp: 5,  trf: 5,  ciu: 5,  rru: 3 },
-  regional_24:    { cars: 9,  vans: 4, hwp: 7,  trf: 6,  ciu: 7,  rru: 4 },
-  regional_non24: { cars: 3,  vans: 2, hwp: 2,  trf: 2,  ciu: 2,  rru: 2 },
-  regional_single:{ cars: 1,  vans: 1, hwp: 1,  trf: 1,  ciu: 1,  rru: 1 },
+  metro_24:       { cars: 12, vans: 6, hwp: 10, trf: 10, ciu: 10, rru: 5, hwp_solo: 2, trf_solo: 2 },
+  metro_non24:    { cars: 7,  vans: 3, hwp: 5,  trf: 5,  ciu: 5,  rru: 3, hwp_solo: 1, trf_solo: 1 },
+  regional_24:    { cars: 9,  vans: 4, hwp: 7,  trf: 6,  ciu: 7,  rru: 4, hwp_solo: 2, trf_solo: 2 },
+  regional_non24: { cars: 3,  vans: 2, hwp: 2,  trf: 2,  ciu: 2,  rru: 2, hwp_solo: 1, trf_solo: 1 },
+  regional_single:{ cars: 1,  vans: 1, hwp: 1,  trf: 1,  ciu: 1,  rru: 1, hwp_solo: 1, trf_solo: 1 },
 };
 
 // Maximum units each scalable service pool can produce.
 // Should match the pool sizes in the builders below.
-const MAX_UNITS = { cars: 15, vans: 6, hwp: 22, trf: 22, ciu: 11, rru: 5 };
+const MAX_UNITS = { cars: 15, vans: 6, hwp: 22, trf: 22, ciu: 11, rru: 5, hwp_solo: 4, trf_solo: 4 };
 
 
 // =============================================================================
@@ -244,7 +244,7 @@ function buildCIUPool(c) {
   const as = shuffle([503, 520].map(n =>        ({ cs: c + n, desc: 'CIU — Afternoon shift', shifts: ['AS'] })));
   const ns = shuffle([541, 542, 543, 544, 545, 546].map(n => ({ cs: c + n, desc: 'CIU — Night shift', shifts: ['NS'] })));
   const fixed = [
-    { cs: c + '550', desc: 'CIU Night Supervisor',     shifts: ['NS'] },
+    { cs: c + '550', desc: 'CIU Night Supervisor',     shifts: ['SUP'] },
     { cs: c + '905', desc: 'CIU Base Station (fixed)', shifts: ['FIXED'] },
   ];
   return interleave(ms, as, ns, fixed);
@@ -256,9 +256,9 @@ function buildPORTPool() {
   const as = shuffle([610, 611, 612].map(n => ({ cs: 'POR' + n, desc: 'PORT Unit — General duties', shifts: ['AS', 'NS'] })));
   const ns = shuffle([620, 621].map(n =>       ({ cs: 'POR' + n, desc: 'PORT Unit — General duties', shifts: ['NS'] })));
   const fixed = [
-    { cs: 'POR650', desc: 'PORT Sergeant',       shifts: ['MS', 'AS'] },
-    { cs: 'POR651', desc: 'PORT Sergeant',        shifts: ['NS'] },
-    { cs: 'POR660', desc: 'PORT Senior Sergeant', shifts: ['MS'] },
+    { cs: 'POR650', desc: 'PORT Sergeant',       shifts: ['SUP'] },
+    { cs: 'POR651', desc: 'PORT Sergeant',        shifts: ['SUP'] },
+    { cs: 'POR660', desc: 'PORT Senior Sergeant', shifts: ['SUP'] },
     { cs: 'POR700', desc: 'PORT Base (fixed)',    shifts: ['FIXED'] },
   ];
   return interleave(ms, as, ns, fixed);
