@@ -7,7 +7,7 @@
 
 // =============================================================================
 // APP STATE
-// ==================================================================================
+// =============================================================================
 const S = {
   stationCode:   '',
   stationName:   '',
@@ -381,46 +381,44 @@ function buildOutput() {
     {
       id: 'hwp', icon: '🚔', name: 'Highway Patrol',
       pool: buildHWPPool(c),
-      note: `Local Highway Patrol uses the station code prefix. Marked cars 610–629, Q Cars 630–639 (1 per 3 marked). SGT 650–659 and S/SGT 660–669 appear at mid counts. Complaints 640–649 and Special Duties 670–699 at higher counts. Fixed base at ${c}906.`,
+      note: `Local Highway Patrol uses the station code prefix. Solo motorcycles 600–609, marked cars 610–629, Q Cars 630–639 (1 per 3 marked). SGT 650–659 and S/SGT 660–669 appear at mid counts. Complaints 640–649 and Special Duties 670–699 at higher counts. Solo units appear below if selected.`,
     },
     {
       id: 'trf', icon: '🚓', name: 'State Highway Patrol',
       pool: buildTRFPool(),
-      note: `State Highway Patrol uses the <strong>TRF</strong> prefix. Marked cars TRF610–629, Q Cars TRF630–639, SGT TRF650–659, S/SGT TRF660–669, Complaints TRF640–649, Special Duties TRF670–699. All unit types appear progressively as the slider increases. Base TRF906.`,
+      note: `State Highway Patrol uses the <strong>TRF</strong> prefix. Solo motorcycles TRF600–609, marked cars TRF610–629, Q Cars TRF630–639, SGT TRF650–659, S/SGT TRF660–669, Complaints TRF640–649, Special Duties TRF670–699. Solo units appear below if selected.`,
     },
     {
       id: 'ciu', outputName: 'CIU (Criminal Investigation Unit)', icon: '🔍', name: 'CIU', pool: buildCIUPool(c),
-      note: `CIU investigates serious crime. Morning: ${c}507. Afternoon: ${c}503 / ${c}520. Night: ${c}541–546 with night supervisor at ${c}550. Fixed base at ${c}905.`,
+      note: `CIU investigates serious crime. Morning: ${c}507. Afternoon: ${c}503 / ${c}520. Night: ${c}541–546 with night supervisor at ${c}550.`,
     },
     {
       id: 'port', outputName: 'PORT (Public Order Response Team)', icon: '🛡️', name: 'PORT', pool: buildPORTPool(),
-      note: `PORT (Public Order Response Team) uses the <strong>POR</strong> prefix — not the station code. General units 600–649, SGT 650–659, S/SGT 660–669. POR units operate across the region and are not station-specific.`,
+      note: `PORT (Public Order Response Team) uses the <strong>POR</strong> prefix — not the station code. General units 600–649, SGT 650–659, S/SGT 660–669. Region-wide asset, not station-specific.`,
     },
 
     {
       id: 'rru', outputName: 'RRU (Regional Response Unit)', icon: '⚡', name: 'RRU', pool: buildRRUPool(c),
-      note: `RRU (440–449) provides operational support, allocated to specific operations or tasks. Fixed base at ${c}904.`,
+      note: `RRU (440–449) provides operational support, allocated to specific operations or tasks.`,
     },
   ];
-
-  // HWP Solo — fixed size, only if selected
-  if (S.selected.has('hwp_solo')) sections.push({
-    id: 'hwp_solo', icon: '🏍️', name: 'Highway Patrol Solo', pool: null,
-    units: buildHWPSoloUnits(c),
-    note: `Station-based HWP solo motorcycle units use the station code prefix, range 600–609.`,
-  });
-
-  // TRF Solo — fixed size, only if selected
-  if (S.selected.has('trf_solo')) sections.push({
-    id: 'trf_solo', icon: '🏍️', name: 'State Highway Patrol Solo', pool: null,
-    units: buildTRFSoloUnits(),
-    note: `State Highway Patrol solo motorcycle units use the <strong>TRF</strong> prefix, range 600–609.`,
-  });
 
   svcDefs.forEach(def => {
     if (!S.selected.has(def.id)) return;
     const count = OVERRIDES[def.id] || defaultCount(def.id);
-    sections.push({ ...def, units: def.pool, activeCount: count, scalable: true });
+
+    // Filter out fixed base station units — not needed in MissionChief output
+    let pool = def.pool.filter(u => !u.shifts.includes('FIXED'));
+
+    // Merge solo motorcycle units directly into the parent HWP/TRF section
+    if (def.id === 'hwp' && S.selected.has('hwp_solo')) {
+      pool = pool.concat(buildHWPSoloUnits(c));
+    }
+    if (def.id === 'trf' && S.selected.has('trf_solo')) {
+      pool = pool.concat(buildTRFSoloUnits());
+    }
+
+    sections.push({ ...def, units: pool, activeCount: count, scalable: true });
   });
 
   // ── Fixed-size services ────────────────────────────────────────────────────
@@ -553,7 +551,8 @@ function resolveStationLabel(code) {
 
 function renderOutput(code, role, roleLabel, sections) {
   const totalVisible = sections.reduce((a, sec) => {
-    return a + (sec.scalable ? (OVERRIDES[sec.id] || defaultCount(sec.id)) : sec.units.length);
+    const displayUnits = sec.units.filter(u => !u.shifts.includes('FIXED'));
+    return a + (sec.scalable ? (OVERRIDES[sec.id] || defaultCount(sec.id)) : displayUnits.length);
   }, 0);
 
   // Narrative intro paragraph
@@ -588,11 +587,13 @@ function renderOutput(code, role, roleLabel, sections) {
   let blocksHtml = '';
   sections.forEach(sec => {
     const isScalable = !!sec.scalable;
-    const count      = isScalable ? (OVERRIDES[sec.id] || defaultCount(sec.id)) : sec.units.length;
-    const maxCount   = isScalable ? (MAX_UNITS[sec.id] || sec.units.length) : sec.units.length;
+    // Strip any remaining FIXED base station units from fixed-size sections
+    const displayUnits = sec.units.filter(u => !u.shifts.includes('FIXED'));
+    const count      = isScalable ? (OVERRIDES[sec.id] || defaultCount(sec.id)) : displayUnits.length;
+    const maxCount   = isScalable ? (MAX_UNITS[sec.id] || displayUnits.length) : displayUnits.length;
 
     let rows = '';
-    sec.units.forEach((u, i) => {
+    displayUnits.forEach((u, i) => {
       const hidden = isScalable && i >= count;
       rows += `<div class="unit-row${hidden ? ' hidden-unit' : ''}" id="urow-${sec.id}-${i}">
         <span class="u-cs">${u.cs}</span>
@@ -676,7 +677,8 @@ function onSlider(svcId, rawVal) {
 
   // Update total count in header
   const total = window._sections.reduce((a, s) => {
-    return a + (s.scalable ? (OVERRIDES[s.id] || defaultCount(s.id)) : s.units.length);
+    const du = s.units.filter(u => !u.shifts.includes('FIXED'));
+    return a + (s.scalable ? (OVERRIDES[s.id] || defaultCount(s.id)) : du.length);
   }, 0);
   const tc = document.getElementById('totalCount');
   if (tc) tc.textContent = total;
@@ -693,12 +695,13 @@ function buildExportText(code, role, roleLabel, sections) {
   exp += `Station  : ${S.stationName} Police Station (${code})\n`;
   if (S.divisionLabel) exp += `Division : ${S.divisionLabel}\n`;
   if (S.regionLabel)   exp += `Region   : ${S.regionLabel}\n`;
-  exp += `Role     : ${roleLabel}\nUnits    : ${sections.reduce((a, s) => a + (s.scalable ? (OVERRIDES[s.id] || defaultCount(s.id)) : s.units.length), 0)}\n${'─'.repeat(46)}\n\n`;
+  exp += `Role     : ${roleLabel}\nUnits    : ${sections.reduce((a, s) => { const du = s.units.filter(u => !u.shifts.includes('FIXED')); return a + (s.scalable ? (OVERRIDES[s.id] || defaultCount(s.id)) : du.length); }, 0)}\n${'─'.repeat(46)}\n\n`;
 
   sections.forEach(sec => {
-    const count = sec.scalable ? (OVERRIDES[sec.id] || defaultCount(sec.id)) : sec.units.length;
+    const exportUnits = sec.units.filter(u => !u.shifts.includes('FIXED'));
+    const count = sec.scalable ? (OVERRIDES[sec.id] || defaultCount(sec.id)) : exportUnits.length;
     exp += `${(sec.outputName || sec.name).toUpperCase()}\n`;
-    sec.units.slice(0, count).forEach(u => { exp += `  ${u.cs.padEnd(12)} ${u.desc}\n`; });
+    exportUnits.slice(0, count).forEach(u => { exp += `  ${u.cs.padEnd(12)} ${u.desc}\n`; });
     exp += '\n';
   });
 
