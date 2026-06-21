@@ -112,16 +112,19 @@ const SERVICES = [
 // regional_24   — Regional, 24-hour hub station (e.g. Bendigo, Geelong)
 // regional_non24— Regional, non-24-hour station (e.g. Bright, Yarrawonga)
 const DEFAULTS = {
-  metro_24:       { cars: 12, vans: 6, hwp: 10, trf: 10, ciu: 10, rru: 5, hwp_solo: 2, trf_solo: 2 },
-  metro_non24:    { cars: 7,  vans: 3, hwp: 5,  trf: 5,  ciu: 5,  rru: 3, hwp_solo: 1, trf_solo: 1 },
-  regional_24:    { cars: 9,  vans: 4, hwp: 7,  trf: 6,  ciu: 7,  rru: 4, hwp_solo: 2, trf_solo: 2 },
-  regional_non24: { cars: 3,  vans: 2, hwp: 2,  trf: 2,  ciu: 2,  rru: 2, hwp_solo: 1, trf_solo: 1 },
-  regional_single:{ cars: 1,  vans: 1, hwp: 1,  trf: 1,  ciu: 1,  rru: 1, hwp_solo: 1, trf_solo: 1 },
+  metro_24:       { cars: 12, vans: 6, hwp: 10, trf: 10, ciu: 10, rru: 5, hwp_solo: 2, trf_solo: 2, fviu: 3, socit: 3, dog: 2, sar: 2, sog: 2, cirt: 2, polair: 2, hviu: 3, mounted: 2, cri: 3 },
+  metro_non24:    { cars: 7,  vans: 3, hwp: 5,  trf: 5,  ciu: 5,  rru: 3, hwp_solo: 1, trf_solo: 1, fviu: 2, socit: 2, dog: 1, sar: 1, sog: 1, cirt: 1, polair: 1, hviu: 2, mounted: 1, cri: 2 },
+  regional_24:    { cars: 9,  vans: 4, hwp: 7,  trf: 6,  ciu: 7,  rru: 4, hwp_solo: 2, trf_solo: 2, fviu: 2, socit: 2, dog: 2, sar: 2, sog: 2, cirt: 2, polair: 2, hviu: 2, mounted: 2, cri: 2 },
+  regional_non24: { cars: 3,  vans: 2, hwp: 2,  trf: 2,  ciu: 2,  rru: 2, hwp_solo: 1, trf_solo: 1, fviu: 1, socit: 1, dog: 1, sar: 1, sog: 1, cirt: 1, polair: 1, hviu: 1, mounted: 1, cri: 1 },
+  regional_single:{ cars: 1,  vans: 1, hwp: 1,  trf: 1,  ciu: 1,  rru: 1, hwp_solo: 1, trf_solo: 1, fviu: 1, socit: 1, dog: 1, sar: 1, sog: 1, cirt: 1, polair: 1, hviu: 1, mounted: 1, cri: 1 },
 };
 
 // Maximum units each scalable service pool can produce.
 // Should match the pool sizes in the builders below.
-const MAX_UNITS = { cars: 15, vans: 6, hwp: 23, trf: 23, ciu: 11, rru: 5, hwp_solo: 4, trf_solo: 4 };
+const MAX_UNITS = {
+  cars: 15, vans: 6, hwp: 23, trf: 23, ciu: 11, rru: 5, hwp_solo: 4, trf_solo: 4,
+  fviu: 10, socit: 10, dog: 10, sar: 8, sog: 8, cirt: 8, polair: 4, hviu: 6, mounted: 6, cri: 7,
+};
 
 
 // =============================================================================
@@ -279,4 +282,120 @@ function buildRRUPool(c) {
     { cs: c + '904', desc: 'RRU Base Station (fixed)',      shifts: ['FIXED'] },
   ];
   return interleave(ms, as, ns, fixed);
+}
+
+function buildFVIUPool(c) {
+  // CAD doc: SGT 480, DET/S/SGT 490, Court Liaison 499.
+  // Units 481–489: MS anchor 487, AS anchor 483. No night shift.
+  const ms = [{ cs: c + '487', desc: 'FVIU Unit — Morning shift',   shifts: ['MS'] }];
+  const as = [{ cs: c + '483', desc: 'FVIU Unit — Afternoon shift', shifts: ['AS'] }];
+  const extra = shuffle([481, 482, 484, 485, 486, 488, 489].map(n => ({ cs: c + n, desc: 'FVIU Unit — Additional', shifts: ['MS', 'AS'] })));
+  return [
+    ms[0], as[0],
+    ...extra,
+    { cs: c + '499', desc: 'FVIU Court Liaison Officer',     shifts: ['MS', 'AS'] },
+    { cs: c + '480', desc: 'FVIU Sergeant',                  shifts: ['SUP'] },
+    { cs: c + '490', desc: 'FVIU Detective Senior Sergeant', shifts: ['SUP'] },
+  ];
+}
+
+function buildSOCITPool(c) {
+  // CAD doc: SGT 450–459, S/SGT 460–469, general units 470–499.
+  // MS anchor 477, AS anchor 473, NS anchor 471.
+  const ms = [{ cs: c + '477', desc: 'SOCIT Unit — Morning shift',   shifts: ['MS'] }];
+  const as = [{ cs: c + '473', desc: 'SOCIT Unit — Afternoon shift', shifts: ['AS'] }];
+  const ns = [{ cs: c + '471', desc: 'SOCIT Unit — Night shift',     shifts: ['NS'] }];
+  const extra = shuffle([472, 474, 475, 476, 478, 479, 470].map(n => ({ cs: c + n, desc: 'SOCIT Unit — Additional', shifts: ['MS', 'AS', 'NS'] })));
+  return [
+    ms[0], as[0], ns[0],
+    ...extra,
+    { cs: c + '450', desc: 'SOCIT Sergeant',        shifts: ['SUP'] },
+    { cs: c + '460', desc: 'SOCIT Senior Sergeant', shifts: ['SUP'] },
+  ];
+}
+
+function buildDogPool() {
+  // CAD doc: CAN prefix, 200–799. General 200–299, narcotics/training 700, courts 710–714.
+  const general = shuffle([200, 201, 202, 203, 204, 205].map(n => ({ cs: 'CAN' + n, desc: 'Canine Unit — General duties', shifts: ['MS', 'AS', 'NS'] })));
+  const specialty = [
+    { cs: 'CAN700', desc: 'Canine — Narcotics / Training specialty',  shifts: ['MS', 'AS'] },
+    { cs: 'CAN710', desc: 'Canine — Court security specialty (SFK)',  shifts: ['MS', 'AS'] },
+    { cs: 'CAN711', desc: 'Canine — Court security specialty (SFK)',  shifts: ['MS', 'AS'] },
+    { cs: 'CAN712', desc: 'Canine — Court security specialty (SFK)',  shifts: ['MS', 'AS'] },
+  ];
+  return [...general, ...specialty];
+}
+
+function buildSARPool() {
+  // CAD doc: RES prefix, 400–459.
+  const units = shuffle([400, 401, 402, 410, 411, 412, 420, 430].map(n => ({ cs: 'RES' + n, desc: 'SAR Unit', shifts: ['MS', 'AS', 'NS'] })));
+  return [
+    ...units,
+    { cs: 'RES451', desc: 'SAR Sergeant', shifts: ['SUP'] },
+  ];
+}
+
+function buildSOGPool() {
+  // CAD doc: SCY prefix. State-wide tactical resource.
+  const units = shuffle([200, 201, 202, 203, 210, 211, 212, 220].map(n => ({ cs: 'SCY' + n, desc: 'Special Operations Group Unit', shifts: ['MS', 'AS', 'NS'] })));
+  return [
+    ...units,
+    { cs: 'SCY250', desc: 'SOG Sergeant', shifts: ['SUP'] },
+  ];
+}
+
+function buildCIRTPool() {
+  // CAD doc: CIR prefix, 200–899.
+  const units = shuffle([200, 201, 202, 210, 211, 220, 230, 240].map(n => ({ cs: 'CIR' + n, desc: 'CIRT Unit', shifts: ['MS', 'AS', 'NS'] })));
+  return [
+    ...units,
+    { cs: 'CIR250', desc: 'CIRT Sergeant', shifts: ['SUP'] },
+  ];
+}
+
+function buildPOLAIRPool() {
+  // CAD doc: POLAIR30–32 rotary, POLAIR35 fixed wing. SGT: AIR451/452. S/SGT: AIR46.
+  return [
+    { cs: 'POLAIR30', desc: 'Rotary Wing (Helicopter) — Primary',   shifts: ['MS', 'AS', 'NS'] },
+    { cs: 'POLAIR31', desc: 'Rotary Wing (Helicopter) — Secondary', shifts: ['AS', 'NS'] },
+    { cs: 'POLAIR32', desc: 'Rotary Wing (Helicopter) — Tertiary',  shifts: ['NS'] },
+    { cs: 'POLAIR35', desc: 'Fixed Wing (Plane)',                    shifts: ['MS', 'AS'] },
+    { cs: 'AIR451',   desc: 'Air Wing Sergeant',                    shifts: ['SUP'] },
+    { cs: 'AIR452',   desc: 'Air Wing Sergeant',                    shifts: ['SUP'] },
+    { cs: 'AIR46',    desc: 'Air Wing Senior Sergeant',             shifts: ['SUP'] },
+  ];
+}
+
+function buildHVIUPool() {
+  // CAD doc: ROA prefix, patrol 501–505, supervisor 550, specialist 560.
+  const units = shuffle([501, 502, 503, 504, 505].map(n => ({ cs: 'ROA' + n, desc: 'Heavy Vehicle Unit', shifts: ['MS', 'AS'] })));
+  return [
+    ...units,
+    { cs: 'ROA560', desc: 'Heavy Vehicle Specialist Unit', shifts: ['MS', 'AS'] },
+    { cs: 'ROA550', desc: 'Heavy Vehicle Supervisor',      shifts: ['SUP'] },
+  ];
+}
+
+function buildMountedPool() {
+  // CAD doc: MOU prefix, 800–899.
+  const units = shuffle([800, 801, 810, 811, 820, 830].map(n => ({ cs: 'MOU' + n, desc: 'Mounted Unit', shifts: ['MS', 'AS'] })));
+  return [
+    ...units,
+    { cs: 'MOU850', desc: 'Mounted Sergeant', shifts: ['SUP'] },
+  ];
+}
+
+function buildCRIPool() {
+  // CAD doc: CRI prefix. Units 573–579 (MS: 577, AS: 573, NS: 575). SGTs 571–572. Office 570 (fixed).
+  const ms    = [{ cs: 'CRI577', desc: 'Crime Desk Unit — Morning shift',   shifts: ['MS'] }];
+  const as    = [{ cs: 'CRI573', desc: 'Crime Desk Unit — Afternoon shift', shifts: ['AS'] }];
+  const ns    = [{ cs: 'CRI575', desc: 'Crime Desk Unit — Night shift',     shifts: ['NS'] }];
+  const extra = shuffle([574, 576, 578, 579].map(n => ({ cs: 'CRI' + n, desc: 'Crime Desk Unit — Additional', shifts: ['MS', 'AS', 'NS'] })));
+  return [
+    ms[0], as[0], ns[0],
+    ...extra,
+    { cs: 'CRI571', desc: 'Crime Desk Sergeant', shifts: ['SUP'] },
+    { cs: 'CRI572', desc: 'Crime Desk Sergeant', shifts: ['SUP'] },
+    { cs: 'CRI570', desc: 'Crime Desk Office',   shifts: ['FIXED'] },
+  ];
 }
