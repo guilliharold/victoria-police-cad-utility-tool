@@ -14,11 +14,11 @@ const S = {
   regionLabel:   '',
   divisionLabel: '',
   psa:           '',
+  psaLabel:      '',
   hwp:           '',
   ciu:           '',
   role:          'metro_24',
   selected:      new Set(),
-
 };
 
 // Per-service slider overrides (service id → unit count)
@@ -96,6 +96,7 @@ function ingestCSV(text) {
     const divisionName   =  f[idx('division')]        || 'Unknown Division';
     const divCode        =  f[idx('div_code')]        || '';
     const psa            =  f[idx('psa')]             || '';
+    const psaLabel       =  f[idx('psa_label')]       || '';
     const hwp            =  f[idx('hwp')]             || '';
     const ciu            =  f[idx('ciu')]             || '';
     const classification =  f[idx('classification')]  || 'metro_24';
@@ -114,8 +115,9 @@ function ingestCSV(text) {
     }
 
     // Push as a pipe-delimited entry matching the format in data.js
+    // Format: CODE|Name|DivCode|PSA|PSALabel|HWP|CIU|classification
     REGION_DATA[regionKey].divisions[divisionName].push(
-      `${code}|${name}|${divCode}|${psa}|${hwp}|${ciu}|${classification}`
+      `${code}|${name}|${divCode}|${psa}|${psaLabel}|${hwp}|${ciu}|${classification}`
     );
   }
 
@@ -221,6 +223,7 @@ function goStep2() {
   S.stationCode   = st.code;
   S.stationName   = st.name;
   S.psa           = st.psa;
+  S.psaLabel      = st.psaLabel;
   S.hwp           = st.hwp;
   S.ciu           = st.ciu;
   S.role          = document.getElementById('knownRole').value;
@@ -318,7 +321,10 @@ function generate() {
 }
 
 function buildOutput() {
-  const c         = S.stationCode;
+  const c          = S.stationCode;
+  // HWP callsign prefix: use the station's HWP field (e.g. NML for metro Melbourne)
+  // falling back to the station code for regional stations where they match (e.g. EWT).
+  const hwpPrefix  = S.hwp || c;
   const role      = S.role;
   const roleLabel = {
     metro_24:       'Metropolitan (24 Hours)',
@@ -336,7 +342,7 @@ function buildOutput() {
   const POOLS = {
     cars:  buildCarPool(c),
     vans:  buildVanPool(c),
-    hwp:   buildHWPPool(c),
+    hwp:   buildHWPPool(hwpPrefix),
     trf:   buildTRFPool(),
     ciu:   buildCIUPool(c),
     port:  buildPORTPool(),
@@ -430,7 +436,7 @@ function buildOutput() {
     },
     {
       id: 'hwp', icon: '🚔', name: 'Highway Patrol',
-      note: `Local Highway Patrol uses the station code prefix. Marked cars 610–629, Q Cars 630–639 (1 per ~4 marked). Special Duties 670–699 at higher counts. SGT (650–659) and S/SGT (660–669) shown in Command & Supervision.`,
+      note: `Highway Patrol prefix for this station: <strong>${hwpPrefix}</strong>. Marked cars ${hwpPrefix}610–${hwpPrefix}629, Q Cars ${hwpPrefix}630–${hwpPrefix}639 (1 per ~4 marked). Special Duties ${hwpPrefix}670–${hwpPrefix}699 at higher counts. SGT and S/SGT shown in Command & Supervision.`,
     },
     {
       id: 'trf', icon: '🚓', name: 'State Highway Patrol',
@@ -617,8 +623,9 @@ function renderOutput(code, role, roleLabel, sections) {
   // Station support links card
   let linksHtml = '';
   if (S.psa || S.hwp || S.ciu) {
+    const psaDisplay = S.psaLabel ? `${S.psaLabel} (${S.psa})` : resolveStationLabel(S.psa);
     const linkItems = [
-      S.psa ? `<div class="link-item"><div class="link-key">Police Service Area (PSA)</div><div class="link-val">${resolveStationLabel(S.psa)}</div></div>` : '',
+      S.psa ? `<div class="link-item"><div class="link-key">Police Service Area (PSA)</div><div class="link-val">${psaDisplay}</div></div>` : '',
       S.hwp ? `<div class="link-item"><div class="link-key">Highway Patrol (HWP)</div><div class="link-val">${resolveStationLabel(S.hwp)}</div></div>` : '',
       S.ciu ? `<div class="link-item"><div class="link-key">Crime Investigation Unit (CIU)</div><div class="link-val">${resolveStationLabel(S.ciu)}</div></div>` : '',
     ].filter(Boolean).join('');
