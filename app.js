@@ -480,123 +480,96 @@ function buildOutput() {
     }
   });
 
-  // ── Fixed-size services ────────────────────────────────────────────────────
-  if (S.selected.has('fviu')) sections.push({
-    id: 'fviu', outputName: 'FVIU (Family Violence Investigation Unit)', icon: '🏠', name: 'FVIU', pool: null,
-    units: [
-      { cs: c + '480', desc: 'FVIU Sergeant',                  shifts: ['SUP'] },
-      { cs: c + '487', desc: 'FVIU Unit — Morning shift',      shifts: ['MS'] },
-      { cs: c + '483', desc: 'FVIU Unit — Afternoon shift',    shifts: ['AS'] },
-      { cs: c + '481', desc: 'FVIU Unit — Additional',         shifts: ['MS', 'AS'] },
-      { cs: c + '482', desc: 'FVIU Unit — Additional',         shifts: ['MS', 'AS'] },
-      { cs: c + '490', desc: 'FVIU Detective Senior Sergeant', shifts: ['SUP'] },
-      { cs: c + '499', desc: 'FVIU Court Liaison Officer',     shifts: ['MS', 'AS'] },
-    ],
-    note: 'Secondary response to family violence incidents within the PSA. Day/afternoon shifts only — no dedicated night unit. SGT at 480, units 481–489 (MS anchor: 487, AS anchor: 483), DET/S/SGT at 490, Court Liaison at 499.',
-  });
+  // ── Specialist services — scalable within documented CAD ranges ───────────
+  if (S.selected.has('fviu')) {
+    const pool = buildFVIUPool(c);
+    sections.push({
+      id: 'fviu', outputName: 'FVIU (Family Violence Investigation Unit)', icon: '🏠', name: 'FVIU',
+      units: pool, scalable: true,
+      note: 'Secondary response to family violence incidents within the PSA. Day/afternoon shifts only — no dedicated night unit. Units 481–489 (MS anchor: 487, AS anchor: 483). SGT (480) and DET/S/SGT (490) shown in Command & Supervision. Court Liaison at 499.',
+    });
+  }
 
-  if (S.selected.has('socit')) sections.push({
-    id: 'socit', outputName: 'SOCIT (Sexual Offences & Child Investigations Team)', icon: '👶', name: 'SOCIT', pool: null,
-    units: [
-      { cs: c + '477', desc: 'SOCIT Unit — Morning shift',   shifts: ['MS'] },
-      { cs: c + '473', desc: 'SOCIT Unit — Afternoon shift', shifts: ['AS'] },
-      { cs: c + '471', desc: 'SOCIT Unit — Night shift',     shifts: ['NS'] },
-      { cs: c + '450', desc: 'SOCIT Sergeant',               shifts: ['SUP'] },
-      { cs: c + '460', desc: 'SOCIT Senior Sergeant',        shifts: ['SUP'] },
-    ],
-    note: 'SOCIT provides initial response to sexual/physical assaults on children or families. Uses station prefix. General units 470–499 (MS: 477, AS: 473, NS: 471), SGT 450–459, S/SGT 460–469.',
-  });
+  if (S.selected.has('socit')) {
+    const pool = buildSOCITPool(c);
+    sections.push({
+      id: 'socit', outputName: 'SOCIT (Sexual Offences & Child Investigations Team)', icon: '👶', name: 'SOCIT',
+      units: pool, scalable: true,
+      note: 'Initial response to sexual/physical assaults on children or families. Uses station prefix. General units 470–499 (MS anchor: 477, AS anchor: 473, NS anchor: 471). SGT (450–459) and S/SGT (460–469) shown in Command & Supervision.',
+    });
+  }
 
-  if (S.selected.has('dog')) sections.push({
-    id: 'dog', outputName: 'CAN (Dog Squad)', icon: '🐕', name: 'Dog Squad (CAN)', pool: null,
-    units: [
-      { cs: 'CAN200', desc: 'Canine Unit — General duties',              shifts: ['MS', 'AS', 'NS'] },
-      { cs: 'CAN201', desc: 'Canine Unit — General duties',              shifts: ['MS', 'AS'] },
-      { cs: 'CAN700', desc: 'Canine — Narcotics / Training specialty',   shifts: ['MS', 'AS'] },
-      { cs: 'CAN710', desc: 'Canine — Court security specialty (SFK)',   shifts: ['MS', 'AS'] },
-      { cs: 'CAN711', desc: 'Canine — Court security specialty (SFK)',   shifts: ['MS', 'AS'] },
-    ],
-    note: 'CAN prefix regardless of station. Range 200–799. CAN200–299 general duties. CAN700 = narcotics/training specialty. CAN710–714 = court security (SFK courts).',
-  });
+  if (S.selected.has('dog')) {
+    const pool = buildDogPool();
+    sections.push({
+      id: 'dog', outputName: 'CAN (Dog Squad)', icon: '🐕', name: 'Dog Squad (CAN)',
+      units: pool, scalable: true,
+      note: 'CAN prefix regardless of station. General duties 200–299. CAN700 = narcotics/training specialty. CAN710–714 = court security (SFK courts).',
+    });
+  }
 
-  if (S.selected.has('sar')) sections.push({
-    id: 'sar', outputName: 'RES (Search & Rescue)', icon: '🔦', name: 'Search & Rescue (RES)', pool: null,
-    units: [
-      { cs: 'RES400', desc: 'SAR Unit — General',  shifts: ['MS', 'AS'] },
-      { cs: 'RES410', desc: 'SAR Field Team',       shifts: ['MS', 'AS', 'NS'] },
-      { cs: 'RES451', desc: 'SAR Sergeant',         shifts: ['SUP'] },
-    ],
-    note: 'RES prefix, range 400–459. Responds to missing persons, bushland searches and maritime incidents. Often activated on callout.',
-  });
+  if (S.selected.has('sar')) {
+    const pool = buildSARPool();
+    sections.push({
+      id: 'sar', outputName: 'RES (Search & Rescue)', icon: '🔦', name: 'Search & Rescue (RES)',
+      units: pool, scalable: true,
+      note: 'RES prefix, range 400–459. Responds to missing persons, bushland searches and maritime incidents. SGT (RES451) shown in Command & Supervision. Often activated on callout.',
+    });
+  }
 
-  if (S.selected.has('sog')) sections.push({
-    id: 'sog', outputName: 'SOG (Special Operations Group)', icon: '🦅', name: 'SOG (Special Operations Group)', pool: null,
-    units: [
-      { cs: 'SCY200', desc: 'Special Operations Group Unit',            shifts: ['MS', 'AS', 'NS'] },
-      { cs: 'SCY210', desc: 'Special Operations Group Unit',            shifts: ['MS', 'AS', 'NS'] },
-      { cs: 'SCY250', desc: 'SOG Sergeant',                            shifts: ['SUP'] },
-    ],
-    note: 'SOG uses the SCY prefix. State-wide specialist tactical resource — deployed as required, not station-specific.',
-  });
+  if (S.selected.has('sog')) {
+    const pool = buildSOGPool();
+    sections.push({
+      id: 'sog', outputName: 'SOG (Special Operations Group)', icon: '🦅', name: 'SOG (Special Operations Group)',
+      units: pool, scalable: true,
+      note: 'SCY prefix. State-wide specialist tactical resource — deployed as required, not station-specific. SGT (SCY250) shown in Command & Supervision.',
+    });
+  }
 
-  if (S.selected.has('cirt')) sections.push({
-    id: 'cirt', outputName: 'CIRT (Critical Incident Response Team)', icon: '🎯', name: 'CIRT (Critical Incident Response Team)', pool: null,
-    units: [
-      { cs: 'CIR200', desc: 'CIRT Unit', shifts: ['MS', 'AS', 'NS'] },
-      { cs: 'CIR210', desc: 'CIRT Unit', shifts: ['MS', 'AS', 'NS'] },
-      { cs: 'CIR250', desc: 'CIRT Sergeant', shifts: ['SUP'] },
-    ],
-    note: 'CIRT uses the CIR prefix, range 200–899. Deployed for critical incidents requiring specialist negotiation and response capability. Region-wide asset.',
-  });
+  if (S.selected.has('cirt')) {
+    const pool = buildCIRTPool();
+    sections.push({
+      id: 'cirt', outputName: 'CIRT (Critical Incident Response Team)', icon: '🎯', name: 'CIRT (Critical Incident Response Team)',
+      units: pool, scalable: true,
+      note: 'CIR prefix, range 200–899. Deployed for critical incidents requiring specialist negotiation and response capability. SGT (CIR250) shown in Command & Supervision. Region-wide asset.',
+    });
+  }
 
-  if (S.selected.has('polair')) sections.push({
-    id: 'polair', outputName: 'POLAIR (Air Wing)', icon: '🚁', name: 'Air Wing', pool: null,
-    units: [
-      { cs: 'POLAIR30', desc: 'Rotary Wing (Helicopter) — Primary',   shifts: ['MS', 'AS', 'NS'] },
-      { cs: 'POLAIR31', desc: 'Rotary Wing (Helicopter) — Secondary', shifts: ['AS', 'NS'] },
-      { cs: 'POLAIR32', desc: 'Rotary Wing (Helicopter) — Tertiary',  shifts: ['NS'] },
-      { cs: 'POLAIR35', desc: 'Fixed Wing (Plane)',                    shifts: ['MS', 'AS'] },
-      { cs: 'AIR451',   desc: 'Air Wing Sergeant',                    shifts: ['SUP'] },
-      { cs: 'AIR452',   desc: 'Air Wing Sergeant',                    shifts: ['SUP'] },
-      { cs: 'AIR46',    desc: 'Air Wing Senior Sergeant',             shifts: ['SUP'] },
-    ],
-    note: 'POLAIR30–32 (rotary wing), POLAIR35 (fixed wing). Used for patrol, traffic enforcement, search/rescue, fire observation and urgent transport. SGT: AIR451/AIR452. S/SGT: AIR46. State-wide asset.',
-  });
+  if (S.selected.has('polair')) {
+    const pool = buildPOLAIRPool();
+    sections.push({
+      id: 'polair', outputName: 'POLAIR (Air Wing)', icon: '🚁', name: 'Air Wing',
+      units: pool, scalable: true,
+      note: 'POLAIR30–32 (rotary wing), POLAIR35 (fixed wing). Used for patrol, traffic enforcement, search/rescue, fire observation and urgent transport. SGT: AIR451/AIR452. S/SGT: AIR46. State-wide asset.',
+    });
+  }
 
-  if (S.selected.has('hviu')) sections.push({
-    id: 'hviu', outputName: 'ROA (Heavy Vehicle Unit)', icon: '🚛', name: 'Heavy Vehicle Unit (ROA)', pool: null,
-    units: [
-      { cs: 'ROA501', desc: 'Heavy Vehicle Unit',              shifts: ['MS', 'AS'] },
-      { cs: 'ROA502', desc: 'Heavy Vehicle Unit',              shifts: ['MS', 'AS'] },
-      { cs: 'ROA503', desc: 'Heavy Vehicle Unit',              shifts: ['AS'] },
-      { cs: 'ROA550', desc: 'Heavy Vehicle Supervisor',        shifts: ['SUP'] },
-      { cs: 'ROA560', desc: 'Heavy Vehicle Specialist Unit',   shifts: ['MS', 'AS'] },
-    ],
-    note: 'ROA prefix. Patrol units 501–505, supervisor at 550, specialist at 560. Compliance and enforcement targeting heavy vehicles on Victorian roads.',
-  });
+  if (S.selected.has('hviu')) {
+    const pool = buildHVIUPool();
+    sections.push({
+      id: 'hviu', outputName: 'ROA (Heavy Vehicle Unit)', icon: '🚛', name: 'Heavy Vehicle Unit (ROA)',
+      units: pool, scalable: true,
+      note: 'ROA prefix. Patrol units 501–505, specialist at 560. Supervisor (ROA550) shown in Command & Supervision. Compliance and enforcement targeting heavy vehicles on Victorian roads.',
+    });
+  }
 
-  if (S.selected.has('mounted')) sections.push({
-    id: 'mounted', outputName: 'MOU (Mounted Branch)', icon: '🐴', name: 'Mounted Branch (MOU)', pool: null,
-    units: [
-      { cs: 'MOU800', desc: 'Mounted Unit — Primary',   shifts: ['MS', 'AS'] },
-      { cs: 'MOU810', desc: 'Mounted Unit — Secondary', shifts: ['AS'] },
-      { cs: 'MOU850', desc: 'Mounted Sergeant',         shifts: ['SUP'] },
-    ],
-    note: 'MOU prefix, range 800–899. High-visibility patrol and crowd control. State-wide asset.',
-  });
+  if (S.selected.has('mounted')) {
+    const pool = buildMountedPool();
+    sections.push({
+      id: 'mounted', outputName: 'MOU (Mounted Branch)', icon: '🐴', name: 'Mounted Branch (MOU)',
+      units: pool, scalable: true,
+      note: 'MOU prefix, range 800–899. High-visibility patrol and crowd control. SGT (MOU850) shown in Command & Supervision. State-wide asset.',
+    });
+  }
 
-  if (S.selected.has('cri')) sections.push({
-    id: 'cri', outputName: 'CRI (Crime Desk)', icon: '📷', name: 'Crime Desk (CRI)', pool: null,
-    units: [
-      { cs: 'CRI577', desc: 'Crime Desk Unit — Morning shift',   shifts: ['MS'] },
-      { cs: 'CRI573', desc: 'Crime Desk Unit — Afternoon shift', shifts: ['AS'] },
-      { cs: 'CRI575', desc: 'Crime Desk Unit — Night shift',     shifts: ['NS'] },
-      { cs: 'CRI571', desc: 'Crime Desk Sergeant',               shifts: ['SUP'] },
-      { cs: 'CRI572', desc: 'Crime Desk Sergeant',               shifts: ['SUP'] },
-      { cs: 'CRI570', desc: 'Crime Desk Office (fixed)',         shifts: ['FIXED'] },
-    ],
-    note: 'CRI prefix. Coordinates CSOs attending events, scene photography and forensic examination. Units 573–579 (MS: CRI577, AS: CRI573, NS: CRI575). SGTs at CRI571–572. Office at CRI570. Region-wide asset, not station-specific.',
-  });
+  if (S.selected.has('cri')) {
+    const pool = buildCRIPool();
+    sections.push({
+      id: 'cri', outputName: 'CRI (Crime Desk)', icon: '📷', name: 'Crime Desk (CRI)',
+      units: pool, scalable: true,
+      note: 'CRI prefix. Coordinates CSOs at events, scene photography and forensic examination. Units 573–579 (MS: CRI577, AS: CRI573, NS: CRI575). SGTs (CRI571–572) shown in Command & Supervision. Office at CRI570. Region-wide asset.',
+    });
+  }
 
   renderOutput(c, role, roleLabel, sections);
 }
