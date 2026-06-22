@@ -110,7 +110,7 @@ ESP,Shepparton,E,Eastern,Goulburn Valley (ED3),ED3,ESP,Shepparton,ESP,Shepparton
 EWT,Wangaratta,E,Eastern,Wangaratta (ED4),ED4,EWT,Wangaratta,EWT,Wangaratta,EWT,regional_24
 EWO,Wodonga,E,Eastern,Wangaratta (ED4),ED4,EWO,Wodonga,EWO,Wodonga,EWO,regional_24
 # Morwell (ED5)
-EML,Morwell,E,Eastern,Morwell (ED5),ED5,EML,Morwell,ELT,Latrobe,EML,regional_24
+EML,Morwell,E,Eastern,Morwell (ED5),ED5,ELT,Latrobe,ELT,Latrobe,ELT,regional_24
 # Bairnsdale (ED6)
 EBL,Bairnsdale,E,Eastern,Bairnsdale (ED6),ED6,EBL,Bairnsdale,EBL,Bairnsdale,EBL,regional_24
 # ── WESTERN ──────────────────────────────────────────────────────────────────
