@@ -102,7 +102,6 @@ function ingestCSV(text) {
     const hwp            =  f[idx('hwp')]             || '';
     const hwpLabel       =  f[idx('hwp_label')]       || '';
     const ciu            =  f[idx('ciu')]             || '';
-    const ciuLabel       =  f[idx('ciu_label')]       || '';
     const classification =  f[idx('classification')]  || 'metro_24';
 
     if (!code || !name || !regionKey) continue;
@@ -119,9 +118,9 @@ function ingestCSV(text) {
     }
 
     // Push as a pipe-delimited entry matching the format in data.js
-    // Format: CODE|Name|DivCode|PSA|PSALabel|HWP|HWPLabel|CIU|CIULabel|classification
+    // Format: CODE|Name|DivCode|PSA|PSALabel|HWP|HWPLabel|CIU|classification
     REGION_DATA[regionKey].divisions[divisionName].push(
-      `${code}|${name}|${divCode}|${psa}|${psaLabel}|${hwp}|${hwpLabel}|${ciu}|${ciuLabel}|${classification}`
+      `${code}|${name}|${divCode}|${psa}|${psaLabel}|${hwp}|${hwpLabel}|${ciu}|${classification}`
     );
   }
 
@@ -631,11 +630,10 @@ function renderOutput(code, role, roleLabel, sections) {
   if (S.psa || S.hwp || S.ciu) {
     const psaDisplay = S.psaLabel ? `${S.psaLabel} (${S.psa})` : resolveStationLabel(S.psa);
     const hwpDisplay = S.hwpLabel ? `${S.hwpLabel} (${S.hwp})` : resolveStationLabel(S.hwp);
-    const ciuDisplay = S.ciuLabel ? `${S.ciuLabel} (${S.ciu})` : resolveStationLabel(S.ciu);
     const linkItems = [
       S.psa ? `<div class="link-item"><div class="link-key">Police Service Area (PSA)</div><div class="link-val">${psaDisplay}</div></div>` : '',
       S.hwp ? `<div class="link-item"><div class="link-key">Highway Patrol (HWP)</div><div class="link-val">${hwpDisplay}</div></div>` : '',
-      S.ciu ? `<div class="link-item"><div class="link-key">Crime Investigation Unit (CIU)</div><div class="link-val">${ciuDisplay}</div></div>` : '',
+      S.ciu ? `<div class="link-item"><div class="link-key">Crime Investigation Unit (CIU)</div><div class="link-val">${resolveStationLabel(S.ciu)}</div></div>` : '',
     ].filter(Boolean).join('');
     linksHtml = `<div class="card" style="margin-bottom:14px">
       <div class="card-head"><div class="dot"></div>Station Support Links</div>
@@ -766,13 +764,10 @@ function buildExportText(code, role, roleLabel, sections) {
   });
 
   if (S.psa || S.hwp || S.ciu) {
-    const psaDisplay = S.psaLabel ? `${S.psaLabel} (${S.psa})` : resolveStationLabel(S.psa);
-    const hwpDisplay = S.hwpLabel ? `${S.hwpLabel} (${S.hwp})` : resolveStationLabel(S.hwp);
-    const ciuDisplay = S.ciuLabel ? `${S.ciuLabel} (${S.ciu})` : resolveStationLabel(S.ciu);
     exp += `STATION SUPPORT LINKS\n`;
-    if (S.psa) exp += `  Police Service Area (PSA)     : ${psaDisplay}\n`;
-    if (S.hwp) exp += `  Highway Patrol (HWP)          : ${hwpDisplay}\n`;
-    if (S.ciu) exp += `  Crime Investigation Unit (CIU) : ${ciuDisplay}\n`;
+    if (S.psa) exp += `  Police Service Area (PSA)     : ${resolveStationLabel(S.psa)}\n`;
+    if (S.hwp) exp += `  Highway Patrol (HWP)          : ${resolveStationLabel(S.hwp)}\n`;
+    if (S.ciu) exp += `  Crime Investigation Unit (CIU) : ${resolveStationLabel(S.ciu)}\n`;
   }
 
   return exp;
