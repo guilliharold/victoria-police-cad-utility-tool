@@ -16,6 +16,7 @@ const S = {
   psa:           '',
   psaLabel:      '',
   hwp:           '',
+  hwpLabel:      '',
   ciu:           '',
   role:          'metro_24',
   selected:      new Set(),
@@ -98,6 +99,7 @@ function ingestCSV(text) {
     const psa            =  f[idx('psa')]             || '';
     const psaLabel       =  f[idx('psa_label')]       || '';
     const hwp            =  f[idx('hwp')]             || '';
+    const hwpLabel       =  f[idx('hwp_label')]       || '';
     const ciu            =  f[idx('ciu')]             || '';
     const classification =  f[idx('classification')]  || 'metro_24';
 
@@ -115,9 +117,9 @@ function ingestCSV(text) {
     }
 
     // Push as a pipe-delimited entry matching the format in data.js
-    // Format: CODE|Name|DivCode|PSA|PSALabel|HWP|CIU|classification
+    // Format: CODE|Name|DivCode|PSA|PSALabel|HWP|HWPLabel|CIU|classification
     REGION_DATA[regionKey].divisions[divisionName].push(
-      `${code}|${name}|${divCode}|${psa}|${psaLabel}|${hwp}|${ciu}|${classification}`
+      `${code}|${name}|${divCode}|${psa}|${psaLabel}|${hwp}|${hwpLabel}|${ciu}|${classification}`
     );
   }
 
@@ -225,6 +227,7 @@ function goStep2() {
   S.psa           = st.psa;
   S.psaLabel      = st.psaLabel;
   S.hwp           = st.hwp;
+  S.hwpLabel      = st.hwpLabel;
   S.ciu           = st.ciu;
   S.role          = document.getElementById('knownRole').value;
 
@@ -624,9 +627,10 @@ function renderOutput(code, role, roleLabel, sections) {
   let linksHtml = '';
   if (S.psa || S.hwp || S.ciu) {
     const psaDisplay = S.psaLabel ? `${S.psaLabel} (${S.psa})` : resolveStationLabel(S.psa);
+    const hwpDisplay = S.hwpLabel ? `${S.hwpLabel} (${S.hwp})` : resolveStationLabel(S.hwp);
     const linkItems = [
       S.psa ? `<div class="link-item"><div class="link-key">Police Service Area (PSA)</div><div class="link-val">${psaDisplay}</div></div>` : '',
-      S.hwp ? `<div class="link-item"><div class="link-key">Highway Patrol (HWP)</div><div class="link-val">${resolveStationLabel(S.hwp)}</div></div>` : '',
+      S.hwp ? `<div class="link-item"><div class="link-key">Highway Patrol (HWP)</div><div class="link-val">${hwpDisplay}</div></div>` : '',
       S.ciu ? `<div class="link-item"><div class="link-key">Crime Investigation Unit (CIU)</div><div class="link-val">${resolveStationLabel(S.ciu)}</div></div>` : '',
     ].filter(Boolean).join('');
     linksHtml = `<div class="card" style="margin-bottom:14px">
