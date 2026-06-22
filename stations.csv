@@ -78,7 +78,8 @@
 code,name,region,region_label,division,div_code,psa,psa_label,hwp,hwp_label,ciu,classification
 # ── NORTH WEST METRO ─────────────────────────────────────────────────────────
 # Melbourne (ND1)
-TBC,Station TBC,N,North West Metro,Melbourne (ND1),ND1,,,,,,metro_24
+NMN,Melbourne North,N,North West Metro,Melbourne (ND1),ND1,NML,Melbourne,NML,NML,NMN,metro_non24
+NMW,Melbourne West,N,North West Metro,Melbourne (ND1),ND1,NML,Melbourne,NML,NML,NMN,metro_24
 # Westgate (ND2)
 TBC,Station TBC,N,North West Metro,Westgate (ND2),ND2,,,,,,metro_24
 # Brimbank (ND3)
@@ -102,13 +103,13 @@ TBC,Station TBC,E,Eastern,Nunawading (ED1),ED1,,,,,,metro_24
 # Knox (ED2)
 TBC,Station TBC,E,Eastern,Knox (ED2),ED2,,,,,,metro_24
 # Goulburn Valley (ED3)
-EBN,Benalla,E,Eastern,Goulburn Valley (ED3),ED3,EBN,,EBN,,EBN,regional_24
-EMS,Mansfield,E,Eastern,Goulburn Valley (ED3),ED3,EMS,,EMS,,EMS,regional_non24
-ESY,Seymour,E,Eastern,Goulburn Valley (ED3),ED3,ESY,,ESY,,ESY,regional_24
-ESP,Shepparton,E,Eastern,Goulburn Valley (ED3),ED3,ESP,,ESP,,ESP,regional_24
+EBN,Benalla,E,Eastern,Goulburn Valley (ED3),ED3,EBN,Benalla,EBN,EBN,EBN,regional_24
+EMS,Mansfield,E,Eastern,Goulburn Valley (ED3),ED3,EMS,Mansfield,EMS,EMS,EMS,regional_non24
+ESY,Seymour,E,Eastern,Goulburn Valley (ED3),ED3,ESY,Seymour,ESY,ESY,ESY,regional_24
+ESP,Shepparton,E,Eastern,Goulburn Valley (ED3),ED3,ESP,Sheppartro,ESP,,ESP,regional_24
 # Wangaratta (ED4)
-EWT,Wangaratta,E,Eastern,Wangaratta (ED4),ED4,EWT,,EWT,,EWT,regional_24
-EWO,Wodonga,E,Eastern,Wangaratta (ED4),ED4,EWO,,EWO,,EWO,regional_24
+EWT,Wangaratta,E,Eastern,Wangaratta (ED4),ED4,EWT,Wangaratta,EWT,EWT,EWT,regional_24
+EWO,Wodonga,E,Eastern,Wangaratta (ED4),ED4,EWO,Wodonga,EWO,EWT,EWO,regional_24
 # Morwell (ED5)
 TBC,Station TBC,E,Eastern,Morwell (ED5),ED5,,,,,,metro_24
 # Bairnsdale (ED6)
