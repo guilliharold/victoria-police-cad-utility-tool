@@ -119,8 +119,8 @@ TBC,Station TBC,W,Western,Geelong (WD1),WD1,,,,,,regional_24
 # Warrnambool (WD2)
 TBC,Station TBC,W,Western,Warrnambool (WD2),WD2,,,,,,regional_24
 # Ballarat (WD3)
-WBA,Ballarat,W,Western,Ballarat (WD3),WD3,WBA,,WBA,,WBA,regional_non24
-WBW,Ballarat West,W,Western,Ballarat (WD3),WD3,WBA,,WBA,,WBA,regional_24
+WBA,Ballarat,W,Western,Ballarat (WD3),WD3,WBA,Ballarat,WBA,Ballarat,WBA,regional_non24
+WBW,Ballarat West,W,Western,Ballarat (WD3),WD3,WBA,Ballarat,WBA,Ballarat,WBA,regional_24
 # Horsham (WD4)
 TBC,Station TBC,W,Western,Horsham (WD4),WD4,,,,,,regional_non24
 # Bendigo (WD5)
