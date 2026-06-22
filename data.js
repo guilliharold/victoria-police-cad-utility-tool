@@ -12,7 +12,7 @@
 // =============================================================================
 // REGION DATA — structural fallback template
 // Real station entries are populated at runtime from stations.csv.
-// Inline entries use the pipe format: CODE|Name|DivCode|PSA|HWP|CIU|classification
+// Inline entries use the pipe format: CODE|Name|DivCode|PSA|PSALabel|HWP|HWPLabel|CIU|CIULabel|classification
 // =============================================================================
 const REGION_DATA = {
   N: {
@@ -211,9 +211,10 @@ function buildHWPPool(c) {
   ];
 }
 
-// HWP solo — built separately; appended only when user opts in
-function buildHWPSoloUnits(c) {
-  return shuffle([600, 601, 602, 603]).map(n => ({ cs: c + n, desc: 'HWP Solo Motorcycle', shifts: ['MS', 'AS'] }));
+// HWP solo — built separately; appended only when user opts in.
+// Uses hwpPrefix (same as main HWP pool) so metro stations get NML600, not NMW600.
+function buildHWPSoloUnits(hwpPrefix) {
+  return shuffle([600, 601, 602, 603]).map(n => ({ cs: hwpPrefix + n, desc: 'HWP Solo Motorcycle', shifts: ['MS', 'AS'] }));
 }
 
 // buildTRFPool — same structure as HWP but with TRF prefix.
