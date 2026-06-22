@@ -78,8 +78,7 @@
 code,name,region,region_label,division,div_code,psa,psa_label,hwp,hwp_label,ciu,classification
 # ── NORTH WEST METRO ─────────────────────────────────────────────────────────
 # Melbourne (ND1)
-NMN,Melbourne North,N,North West Metro,Melbourne (ND1),ND1,NML,Melbourne,NML,Melbourne,NMN,metro_non24
-NMW,Melbourne West,N,North West Metro,Melbourne (ND1),ND1,NML,Melbourne,NML,Melbourne,NMN,metro_24
+TBC,Station TBC,N,North West Metro,Melbourne (ND1),ND1,,,,,,metro_24
 # Westgate (ND2)
 TBC,Station TBC,N,North West Metro,Westgate (ND2),ND2,,,,,,metro_24
 # Brimbank (ND3)
