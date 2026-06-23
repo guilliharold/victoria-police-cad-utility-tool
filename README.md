@@ -1,4 +1,4 @@
-# Victoria Police CAD Lineup Generator
+# Victoria Police CAD Utility Tool
 
 A browser-based tool for generating realistic Victoria Police CAD (Computer Aided Dispatch) callsign lineups. Dispatchers select a station, choose which services are on shift, and the tool produces a correctly-prefixed lineup with shuffled callsigns drawn from documented CAD number ranges.
 
