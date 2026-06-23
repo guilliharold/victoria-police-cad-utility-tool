@@ -52,6 +52,14 @@
 #                  e.g. "Wangaratta" for EWT, "Moreland" for NMR.
 #                  Leave blank if unknown — the raw CIU code will display instead.
 #
+#   services       Space-separated list of service IDs available at this station.
+#                  If blank, all services are selectable (use for unknown stations).
+#                  If set, any service not listed will be greyed out and unselectable.
+#                  Available IDs: cars vans hwp trf port ciu fviu socit rru dog
+#                                 sar sog cirt hviu mounted cri
+#                  Solo cards (hwp_solo, trf_solo) follow their parent automatically.
+#                  e.g. "cars vans hwp ciu fviu socit cri"
+#
 #   classification Station type. Must be exactly one of:
 #
 #                  metro_24       = Metropolitan, 24-hour continuous coverage
@@ -74,56 +82,58 @@
 #                                   One officer, one vehicle (station car or divisional van only)
 #                                   e.g. Dookie, Elmore, Katamatite, Sea Lake, Tungamah
 #
+# EXAMPLE ROW
+#   ESP,Shepparton,E,Eastern,Goulburn Valley (ED3),ED3,ESP,Shepparton,ESP,Shepparton,ESP,Shepparton,,regional_24
 #
 # NOTES
 #   • Leave a field blank rather than writing N/A or — (just keep the comma).
 #   • classification controls how many units the tool generates by default.
 #   • Stations appear in the dropdown in the order they appear in this file.
 # ─────────────────────────────────────────────────────────────────────────────
-code,name,region,region_label,division,div_code,psa,psa_label,hwp,hwp_label,ciu,ciu_label,classification
+code,name,region,region_label,division,div_code,psa,psa_label,hwp,hwp_label,ciu,ciu_label,services,classification
 # ── NORTH WEST METRO ─────────────────────────────────────────────────────────
 # Melbourne (ND1)
-NMW,Melbourne West,N,North West Metro,Melbourne (ND1),ND1,NML,Melbourne,NML,Melbourne,NML,Melbourne,metro_24
+TBC,Station TBC,N,North West Metro,Melbourne (ND1),ND1,,,,,,,,metro_24
 # Westgate (ND2)
-NWB,Werribee,N,North West Metro,Westgate (ND2),ND2,NWY,Wyndham,NWY,Wyndham,NWY,Wyndham,metro_24
+TBC,Station TBC,N,North West Metro,Westgate (ND2),ND2,,,,,,,,metro_24
 # Brimbank (ND3)
-NMT,Melton,N,North West Metro,Brimbank (ND3),ND3,NMT,Melton,NMT,Melton,NMT,Melton,metro_24
+TBC,Station TBC,N,North West Metro,Brimbank (ND3),ND3,,,,,,,,metro_24
 # Fawkner (ND4)
-NBM,Broadmeadows,N,North West Metro,Fawkner (ND4),ND4,NHU,Hume,NFK,Fawkner,NHU,Hume,metro_24
+TBC,Station TBC,N,North West Metro,Fawkner (ND4),ND4,,,,,,,,metro_24
 # Diamond Creek (ND5)
-TBC,Station TBC,N,North West Metro,Diamond Creek (ND5),ND5,,,,,,,metro_24
+TBC,Station TBC,N,North West Metro,Diamond Creek (ND5),ND5,,,,,,,,metro_24
 # ── SOUTHERN METRO ───────────────────────────────────────────────────────────
 # Prahran (SD1)
-TBC,Station TBC,S,Southern Metro,Prahran (SD1),SD1,,,,,,,metro_24
+TBC,Station TBC,S,Southern Metro,Prahran (SD1),SD1,,,,,,,,metro_24
 # Moorabbin (SD2)
-TBC,Station TBC,S,Southern Metro,Moorabbin (SD2),SD2,,,,,,,metro_24
+TBC,Station TBC,S,Southern Metro,Moorabbin (SD2),SD2,,,,,,,,metro_24
 # Dandenong (SD3)
-TBC,Station TBC,S,Southern Metro,Dandenong (SD3),SD3,,,,,,,metro_24
+TBC,Station TBC,S,Southern Metro,Dandenong (SD3),SD3,,,,,,,,metro_24
 # Frankston (SD4)
-TBC,Station TBC,S,Southern Metro,Frankston (SD4),SD4,,,,,,,metro_24
+TBC,Station TBC,S,Southern Metro,Frankston (SD4),SD4,,,,,,,,metro_24
 # ── EASTERN ──────────────────────────────────────────────────────────────────
 # Nunawading (ED1)
-EFH,Forest Hill,E,Eastern,Nunawading (ED1),ED1,EWH,Whitehorse,ENG,Nunawading,EWH,Whitehorse,metro_24
+TBC,Station TBC,E,Eastern,Nunawading (ED1),ED1,,,,,,,,metro_24
 # Knox (ED2)
-EKX,Knox,E,Eastern,Knox (ED2),ED2,EKX,Knox,EKX,Knox,EKX,Knox,metro_24
+TBC,Station TBC,E,Eastern,Knox (ED2),ED2,,,,,,,,metro_24
 # Goulburn Valley (ED3)
-ESP,Shepparton,E,Eastern,Goulburn Valley (ED3),ED3,ESP,Shepparton,ESP,Shepparton,ESP,Shepparton,regional_24
+TBC,Station TBC,E,Eastern,Goulburn Valley (ED3),ED3,,,,,,,,regional_24
 # Wangaratta (ED4)
-EWT,Wangaratta,E,Eastern,Wangaratta (ED4),ED4,EWT,Wangaratta,EWT,Wangaratta,EWT,Wangaratta,regional_24
+TBC,Station TBC,E,Eastern,Wangaratta (ED4),ED4,,,,,,,,regional_24
 # Morwell (ED5)
-EML,Morwell,E,Eastern,Morwell (ED5),ED5,ELT,Latrobe,ELT,Latrobe,EML,Morwell,regional_24
+TBC,Station TBC,E,Eastern,Morwell (ED5),ED5,,,,,,,,regional_24
 # Bairnsdale (ED6)
-EBL,Bairnsdale,E,Eastern,Bairnsdale (ED6),ED6,EBL,Bairnsdale,EBL,Bairnsdale,EBL,Bairnsdale,regional_24
+TBC,Station TBC,E,Eastern,Bairnsdale (ED6),ED6,,,,,,,,regional_24
 # ── WESTERN ──────────────────────────────────────────────────────────────────
 # Geelong (WD1)
-WGL,Geelong,W,Western,Geelong (WD1),WD1,WGL,Geelong,WGL,Geelong,WGL,Geelong,regional_24
+TBC,Station TBC,W,Western,Geelong (WD1),WD1,,,,,,,,regional_24
 # Warrnambool (WD2)
-WWR,Warrnambool,W,Western,Warrnambool (WD2),WD2,WWR,Warrnambool,WWR,Warrnambool,WWR,Warrnambool,regional_24
+TBC,Station TBC,W,Western,Warrnambool (WD2),WD2,,,,,,,,regional_24
 # Ballarat (WD3)
-WBA,Ballarat,W,Western,Ballarat (WD3),WD3,WBA,Ballarat,WBA,Ballarat,WBA,Ballarat,regional_non24
+TBC,Station TBC,W,Western,Ballarat (WD3),WD3,,,,,,,,regional_24
 # Horsham (WD4)
-WHM,Horsham,W,Western,Horsham (WD4),WD4,WHM,Horsham,WHM,Horsham,WHM,Horsham,regional_non24
+TBC,Station TBC,W,Western,Horsham (WD4),WD4,,,,,,,,regional_non24
 # Bendigo (WD5)
-WBI,Bendigo,W,Western,Bendigo (WD5),WD5,WBI,Bendigo,WBI,Bendigo,WBI,Bendigo,regional_24
+TBC,Station TBC,W,Western,Bendigo (WD5),WD5,,,,,,,,regional_24
 # Mildura (WD6)
-WML,Mildura,W,Western,Mildura (WD6),WD6,WML,Mildura,WML,Mildura,WML,Mildura,regional_24
+TBC,Station TBC,W,Western,Mildura (WD6),WD6,,,,,,,,regional_24
