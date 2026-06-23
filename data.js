@@ -98,7 +98,6 @@ const SERVICES = [
   { id: 'sar',     icon: '🔦', name: 'Search & Rescue',     desc: 'Search & rescue. RES prefix, 400–459.' },
   { id: 'sog',     icon: '🦅', name: 'SOG',                       desc: 'Special Operations Group. SCY prefix.' },
   { id: 'cirt',    icon: '🎯', name: 'CIRT',                      desc: 'Critical Incident Response Team. CIR prefix, 200–899.' },
-  { id: 'polair',  icon: '🚁', name: 'Air Wing',                   desc: 'Helicopters and fixed wing aircraft.' },
   { id: 'hviu',    icon: '🚛', name: 'Heavy Vehicle Unit',  desc: 'Heavy vehicle enforcement. ROA prefix.' },
   { id: 'mounted', icon: '🐴', name: 'Mounted Branch',      desc: 'Mounted unit. MOU prefix, 800–899.' },
   { id: 'cri',     icon: '📷', name: 'Crime Desk',           desc: 'Crime scene coordination, photography & forensics. CRI prefix, 571–579.' },
@@ -115,18 +114,18 @@ const SERVICES = [
 // regional_24   — Regional, 24-hour hub station (e.g. Bendigo, Geelong)
 // regional_non24— Regional, non-24-hour station (e.g. Bright, Yarrawonga)
 const DEFAULTS = {
-  metro_24:       { cars: 12, vans: 6, hwp: 10, trf: 10, ciu: 10, rru: 5, hwp_solo: 2, trf_solo: 2, fviu: 3, socit: 3, dog: 2, sar: 2, sog: 2, cirt: 2, polair: 2, hviu: 3, mounted: 2, cri: 3 },
-  metro_non24:    { cars: 7,  vans: 3, hwp: 5,  trf: 5,  ciu: 5,  rru: 3, hwp_solo: 1, trf_solo: 1, fviu: 2, socit: 2, dog: 1, sar: 1, sog: 1, cirt: 1, polair: 1, hviu: 2, mounted: 1, cri: 2 },
-  regional_24:    { cars: 9,  vans: 4, hwp: 7,  trf: 6,  ciu: 7,  rru: 4, hwp_solo: 2, trf_solo: 2, fviu: 2, socit: 2, dog: 2, sar: 2, sog: 2, cirt: 2, polair: 2, hviu: 2, mounted: 2, cri: 2 },
-  regional_non24: { cars: 3,  vans: 2, hwp: 2,  trf: 2,  ciu: 2,  rru: 2, hwp_solo: 1, trf_solo: 1, fviu: 1, socit: 1, dog: 1, sar: 1, sog: 1, cirt: 1, polair: 1, hviu: 1, mounted: 1, cri: 1 },
-  regional_single:{ cars: 1,  vans: 1, hwp: 1,  trf: 1,  ciu: 1,  rru: 1, hwp_solo: 1, trf_solo: 1, fviu: 1, socit: 1, dog: 1, sar: 1, sog: 1, cirt: 1, polair: 1, hviu: 1, mounted: 1, cri: 1 },
+  metro_24:       { cars: 12, vans: 6, hwp: 10, trf: 10, ciu: 10, rru: 5, hwp_solo: 2, trf_solo: 2, fviu: 3, socit: 3, dog: 2, sar: 2, sog: 2, cirt: 2, hviu: 3, mounted: 2, cri: 3 },
+  metro_non24:    { cars: 7,  vans: 3, hwp: 5,  trf: 5,  ciu: 5,  rru: 3, hwp_solo: 1, trf_solo: 1, fviu: 2, socit: 2, dog: 1, sar: 1, sog: 1, cirt: 1, hviu: 2, mounted: 1, cri: 2 },
+  regional_24:    { cars: 9,  vans: 4, hwp: 7,  trf: 6,  ciu: 7,  rru: 4, hwp_solo: 2, trf_solo: 2, fviu: 2, socit: 2, dog: 2, sar: 2, sog: 2, cirt: 2, hviu: 2, mounted: 2, cri: 2 },
+  regional_non24: { cars: 3,  vans: 2, hwp: 2,  trf: 2,  ciu: 2,  rru: 2, hwp_solo: 1, trf_solo: 1, fviu: 1, socit: 1, dog: 1, sar: 1, sog: 1, cirt: 1, hviu: 1, mounted: 1, cri: 1 },
+  regional_single:{ cars: 1,  vans: 1, hwp: 1,  trf: 1,  ciu: 1,  rru: 1, hwp_solo: 1, trf_solo: 1, fviu: 1, socit: 1, dog: 1, sar: 1, sog: 1, cirt: 1, hviu: 1, mounted: 1, cri: 1 },
 };
 
 // Maximum units each scalable service pool can produce.
 // Should match the pool sizes in the builders below.
 const MAX_UNITS = {
   cars: 15, vans: 6, hwp: 23, trf: 23, ciu: 11, rru: 5, hwp_solo: 4, trf_solo: 4,
-  fviu: 10, socit: 10, dog: 10, sar: 8, sog: 8, cirt: 8, polair: 4, hviu: 6, mounted: 6, cri: 7,
+  fviu: 10, socit: 10, dog: 10, sar: 8, sog: 8, cirt: 8, hviu: 6, mounted: 6, cri: 7,
 };
 
 
@@ -354,19 +353,6 @@ function buildCIRTPool() {
   return [
     ...units,
     { cs: 'CIR250', desc: 'CIRT Sergeant', shifts: ['SUP'] },
-  ];
-}
-
-function buildPOLAIRPool() {
-  // CAD doc: POLAIR30–32 rotary, POLAIR35 fixed wing. SGT: AIR451/452. S/SGT: AIR46.
-  return [
-    { cs: 'POLAIR30', desc: 'Rotary Wing (Helicopter) — Primary',   shifts: ['MS', 'AS', 'NS'] },
-    { cs: 'POLAIR31', desc: 'Rotary Wing (Helicopter) — Secondary', shifts: ['AS', 'NS'] },
-    { cs: 'POLAIR32', desc: 'Rotary Wing (Helicopter) — Tertiary',  shifts: ['NS'] },
-    { cs: 'POLAIR35', desc: 'Fixed Wing (Plane)',                    shifts: ['MS', 'AS'] },
-    { cs: 'AIR451',   desc: 'Air Wing Sergeant',                    shifts: ['SUP'] },
-    { cs: 'AIR452',   desc: 'Air Wing Sergeant',                    shifts: ['SUP'] },
-    { cs: 'AIR46',    desc: 'Air Wing Senior Sergeant',             shifts: ['SUP'] },
   ];
 }
 
