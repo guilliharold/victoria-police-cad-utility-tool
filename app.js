@@ -18,7 +18,6 @@ const S = {
   hwp:           '',
   hwpLabel:      '',
   ciu:           '',
-  ciuLabel:      '',
   role:          'metro_24',
   selected:      new Set(),
 };
@@ -44,7 +43,7 @@ setInterval(() => {
 //
 // CSV columns (header row required):
 //   code, name, region, region_label, division, div_code,
-//   psa, psa_label, hwp, hwp_label, ciu, ciu_label, classification
+//   psa, hwp, ciu, classification
 // =============================================================================
 async function loadCSV() {
   try {
@@ -102,7 +101,6 @@ function ingestCSV(text) {
     const hwp            =  f[idx('hwp')]             || '';
     const hwpLabel       =  f[idx('hwp_label')]       || '';
     const ciu            =  f[idx('ciu')]             || '';
-    const ciuLabel       =  f[idx('ciu_label')]       || '';
     const classification =  f[idx('classification')]  || 'metro_24';
 
     if (!code || !name || !regionKey) continue;
@@ -119,9 +117,9 @@ function ingestCSV(text) {
     }
 
     // Push as a pipe-delimited entry matching the format in data.js
-    // Format: CODE|Name|DivCode|PSA|PSALabel|HWP|HWPLabel|CIU|CIULabel|classification
+    // Format: CODE|Name|DivCode|PSA|PSALabel|HWP|HWPLabel|CIU|classification
     REGION_DATA[regionKey].divisions[divisionName].push(
-      `${code}|${name}|${divCode}|${psa}|${psaLabel}|${hwp}|${hwpLabel}|${ciu}|${ciuLabel}|${classification}`
+      `${code}|${name}|${divCode}|${psa}|${psaLabel}|${hwp}|${hwpLabel}|${ciu}|${classification}`
     );
   }
 
@@ -231,7 +229,6 @@ function goStep2() {
   S.hwp           = st.hwp;
   S.hwpLabel      = st.hwpLabel;
   S.ciu           = st.ciu;
-  S.ciuLabel      = st.ciuLabel;
   S.role          = document.getElementById('knownRole').value;
 
   const r = document.getElementById('selRegion').value;
@@ -331,6 +328,9 @@ function buildOutput() {
   // HWP callsign prefix: use the station's HWP field (e.g. NML for metro Melbourne)
   // falling back to the station code for regional stations where they match (e.g. EWT).
   const hwpPrefix  = S.hwp || c;
+  // CIU callsign prefix: use the station's CIU field (e.g. NMW for Melbourne West)
+  // falling back to the station code if not set.
+  const ciuPrefix  = S.ciu || c;
   const role      = S.role;
   const roleLabel = {
     metro_24:       'Metropolitan (24 Hours)',
@@ -350,7 +350,7 @@ function buildOutput() {
     vans:  buildVanPool(c),
     hwp:   buildHWPPool(hwpPrefix),
     trf:   buildTRFPool(),
-    ciu:   buildCIUPool(c),
+    ciu:   buildCIUPool(ciuPrefix),
     port:  buildPORTPool(),
     rru:   buildRRUPool(c),
   };
@@ -450,7 +450,7 @@ function buildOutput() {
     },
     {
       id: 'ciu', outputName: 'CIU (Criminal Investigation Unit)', icon: '🔍', name: 'CIU',
-      note: `CIU investigates serious crime. Morning: ${c}507. Afternoon: ${c}503 / ${c}520. Night: ${c}541–546 with night supervisor at ${c}550.`,
+      note: `CIU prefix for this station: <strong>${ciuPrefix}</strong>. Morning: ${ciuPrefix}507. Afternoon: ${ciuPrefix}503 / ${ciuPrefix}520. Night: ${ciuPrefix}541–546 with night supervisor at ${ciuPrefix}550.`,
     },
     {
       id: 'port', outputName: 'PORT (Public Order Response Team)', icon: '🛡️', name: 'PORT',
@@ -473,7 +473,7 @@ function buildOutput() {
 
     // Solo section — pushed immediately after the parent, scalable with its own slider
     if (def.id === 'hwp' && S.selected.has('hwp_solo')) {
-      const soloPool = buildHWPSoloUnits(hwpPrefix);
+      const soloPool = buildHWPSoloUnits(c);
       sections.push({
         id: 'hwp_solo', icon: '🏍️', name: 'Highway Patrol Solo',
         units: soloPool, activeCount: OVERRIDES['hwp_solo'] || defaultCount('hwp_solo'),
@@ -631,11 +631,10 @@ function renderOutput(code, role, roleLabel, sections) {
   if (S.psa || S.hwp || S.ciu) {
     const psaDisplay = S.psaLabel ? `${S.psaLabel} (${S.psa})` : resolveStationLabel(S.psa);
     const hwpDisplay = S.hwpLabel ? `${S.hwpLabel} (${S.hwp})` : resolveStationLabel(S.hwp);
-    const ciuDisplay = S.ciuLabel ? `${S.ciuLabel} (${S.ciu})` : resolveStationLabel(S.ciu);
     const linkItems = [
       S.psa ? `<div class="link-item"><div class="link-key">Police Service Area (PSA)</div><div class="link-val">${psaDisplay}</div></div>` : '',
       S.hwp ? `<div class="link-item"><div class="link-key">Highway Patrol (HWP)</div><div class="link-val">${hwpDisplay}</div></div>` : '',
-      S.ciu ? `<div class="link-item"><div class="link-key">Crime Investigation Unit (CIU)</div><div class="link-val">${ciuDisplay}</div></div>` : '',
+      S.ciu ? `<div class="link-item"><div class="link-key">Crime Investigation Unit (CIU)</div><div class="link-val">${resolveStationLabel(S.ciu)}</div></div>` : '',
     ].filter(Boolean).join('');
     linksHtml = `<div class="card" style="margin-bottom:14px">
       <div class="card-head"><div class="dot"></div>Station Support Links</div>
@@ -766,13 +765,10 @@ function buildExportText(code, role, roleLabel, sections) {
   });
 
   if (S.psa || S.hwp || S.ciu) {
-    const psaDisplay = S.psaLabel ? `${S.psaLabel} (${S.psa})` : resolveStationLabel(S.psa);
-    const hwpDisplay = S.hwpLabel ? `${S.hwpLabel} (${S.hwp})` : resolveStationLabel(S.hwp);
-    const ciuDisplay = S.ciuLabel ? `${S.ciuLabel} (${S.ciu})` : resolveStationLabel(S.ciu);
     exp += `STATION SUPPORT LINKS\n`;
-    if (S.psa) exp += `  Police Service Area (PSA)      : ${psaDisplay}\n`;
-    if (S.hwp) exp += `  Highway Patrol (HWP)           : ${hwpDisplay}\n`;
-    if (S.ciu) exp += `  Crime Investigation Unit (CIU)  : ${ciuDisplay}\n`;
+    if (S.psa) exp += `  Police Service Area (PSA)     : ${resolveStationLabel(S.psa)}\n`;
+    if (S.hwp) exp += `  Highway Patrol (HWP)          : ${resolveStationLabel(S.hwp)}\n`;
+    if (S.ciu) exp += `  Crime Investigation Unit (CIU) : ${resolveStationLabel(S.ciu)}\n`;
   }
 
   return exp;
