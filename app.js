@@ -217,7 +217,6 @@ function onStation() {
     if (st.classification) {
       document.getElementById('knownRole').value = st.classification;
     }
-    // Default supervisor to No for single-member and non-24-hour stations
     const noSuper = ['regional_single', 'regional_non24'].includes(st.classification);
     document.getElementById('superRequired').value = noSuper ? 'no' : 'yes';
   }
@@ -385,36 +384,6 @@ function buildOutput() {
     rru:   buildRRUPool(c),
   };
 
-  // ── Suffix deduplication ─────────────────────────────────────────────────
-  // Prevents the same numeric suffix appearing twice under the same prefix.
-  // ESP211 and EWT211 are fine — different prefixes don't interfere.
-  const usedSuffixes = new Map();
-
-  function claimSuffix(cs) {
-    const m = cs.match(/^([A-Za-z]+)(\d+)$/);
-    if (!m) return true;
-    const [, prefix, suffix] = m;
-    if (!usedSuffixes.has(prefix)) usedSuffixes.set(prefix, new Set());
-    const seen = usedSuffixes.get(prefix);
-    if (seen.has(suffix)) return false;
-    seen.add(suffix);
-    return true;
-  }
-
-  function dedupePool(pool) {
-    return pool.map(u => {
-      if (!u || u.shifts.includes('SUP') || u.shifts.includes('FIXED')) return u;
-      return claimSuffix(u.cs) ? u : null;
-    }).filter(Boolean);
-  }
-
-  // Dedupe in priority order: cars → vans → rru → ciu → hwp
-  if (S.selected.has('cars'))  POOLS.cars  = dedupePool(POOLS.cars);
-  if (S.selected.has('vans'))  POOLS.vans  = dedupePool(POOLS.vans);
-  if (S.selected.has('rru'))   POOLS.rru   = dedupePool(POOLS.rru);
-  if (S.selected.has('ciu'))   POOLS.ciu   = dedupePool(POOLS.ciu);
-  if (S.selected.has('hwp'))   POOLS.hwp   = dedupePool(POOLS.hwp);
-
   // ── Supervision ────────────────────────────────────────────────────────────
   // Base station supervisors first, then SUP-tagged units from every selected
   // service (harvested from the already-built pools and fixed service lists).
@@ -554,7 +523,7 @@ function buildOutput() {
 
   // ── Specialist services — scalable within documented CAD ranges ───────────
   if (S.selected.has('fviu')) {
-    const pool = dedupePool(buildFVIUPool(c));
+    const pool = buildFVIUPool(c);
     sections.push({
       id: 'fviu', outputName: 'FVIU (Family Violence Investigation Unit)', icon: '🏠', name: 'FVIU',
       units: pool, scalable: true,
@@ -563,7 +532,7 @@ function buildOutput() {
   }
 
   if (S.selected.has('socit')) {
-    const pool = dedupePool(buildSOCITPool(c));
+    const pool = buildSOCITPool(c);
     sections.push({
       id: 'socit', outputName: 'SOCIT (Sexual Offences & Child Investigations Team)', icon: '👶', name: 'SOCIT',
       units: pool, scalable: true,
@@ -572,7 +541,7 @@ function buildOutput() {
   }
 
   if (S.selected.has('dog')) {
-    const pool = dedupePool(buildDogPool());
+    const pool = buildDogPool();
     sections.push({
       id: 'dog', outputName: 'CAN (Dog Squad)', icon: '🐕', name: 'Dog Squad (CAN)',
       units: pool, scalable: true,
@@ -581,7 +550,7 @@ function buildOutput() {
   }
 
   if (S.selected.has('sar')) {
-    const pool = dedupePool(buildSARPool());
+    const pool = buildSARPool();
     sections.push({
       id: 'sar', outputName: 'RES (Search & Rescue)', icon: '🔦', name: 'Search & Rescue (RES)',
       units: pool, scalable: true,
@@ -590,7 +559,7 @@ function buildOutput() {
   }
 
   if (S.selected.has('sog')) {
-    const pool = dedupePool(buildSOGPool());
+    const pool = buildSOGPool();
     sections.push({
       id: 'sog', outputName: 'SOG (Special Operations Group)', icon: '🦅', name: 'SOG (Special Operations Group)',
       units: pool, scalable: true,
@@ -599,7 +568,7 @@ function buildOutput() {
   }
 
   if (S.selected.has('cirt')) {
-    const pool = dedupePool(buildCIRTPool());
+    const pool = buildCIRTPool();
     sections.push({
       id: 'cirt', outputName: 'CIRT (Critical Incident Response Team)', icon: '🎯', name: 'CIRT (Critical Incident Response Team)',
       units: pool, scalable: true,
@@ -617,7 +586,7 @@ function buildOutput() {
   }
 
   if (S.selected.has('hviu')) {
-    const pool = dedupePool(buildHVIUPool());
+    const pool = buildHVIUPool();
     sections.push({
       id: 'hviu', outputName: 'ROA (Heavy Vehicle Unit)', icon: '🚛', name: 'Heavy Vehicle Unit (ROA)',
       units: pool, scalable: true,
@@ -626,7 +595,7 @@ function buildOutput() {
   }
 
   if (S.selected.has('mounted')) {
-    const pool = dedupePool(buildMountedPool());
+    const pool = buildMountedPool();
     sections.push({
       id: 'mounted', outputName: 'MOU (Mounted Branch)', icon: '🐴', name: 'Mounted Branch (MOU)',
       units: pool, scalable: true,
@@ -635,7 +604,7 @@ function buildOutput() {
   }
 
   if (S.selected.has('cri')) {
-    const pool = dedupePool(buildCRIPool());
+    const pool = buildCRIPool();
     sections.push({
       id: 'cri', outputName: 'CRI (Crime Desk)', icon: '📷', name: 'Crime Desk (CRI)',
       units: pool, scalable: true,
