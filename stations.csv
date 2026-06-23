@@ -115,11 +115,13 @@ TBC,Station TBC,E,Eastern,Nunawading (ED1),ED1,,,,,,,,metro_24
 # Knox (ED2)
 TBC,Station TBC,E,Eastern,Knox (ED2),ED2,,,,,,,,metro_24
 # Goulburn Valley (ED3)
-EDI,Dookie,E,Eastern,Goulburn Valley (ED3),ED3,ESP,Shepparton,ESP,Shepparton,ESP,Shepparton,vans,regional_single
-ESP,Shepparton,E,Eastern,Goulburn Valley (ED3),ED3,ESP,Shepparton,ESP,Shepparton,ESP,Shepparton,cars vans hwp ciu fviu socit,regional_24
+EDI,Dookie,E,Eastern,Goulburn Valley (ED3),ED3,ESP,Greater Shepparton,ESP,Shepparton,ESP,Shepparton,vans,regional_single
+EMP,Mooroopna,E,Eastern,Goulburn Valley (ED3),ED3,ESP,Greater Shepparton,ESP,Shepparton,ESP,Shepparton,cars vans,regional_non24
+EMX,Murchison,E,Eastern,Goulburn Valley (ED3),ED3,ESP,Greater Shepparton,ESP,Shepparton,ESP,Shepparton,cars,regional_single
+ESP,Shepparton,E,Eastern,Goulburn Valley (ED3),ED3,ESP,Greater Shepparton,ESP,Shepparton,ESP,Shepparton,cars vans hwp ciu fviu socit,regional_24
+ETT,Tatura,E,Eastern,Goulburn Valley (ED3),ED3,ESP,Greater Shepparton,ESP,Shepparton,ESP,Shepparton,cars vans,regional_non24
 # Wangaratta (ED4)
-ENT,Nathalia,E,Eastern,Wangaratta (ED4),ED4,EWT,Wangaratta,ECB,Cobram,ECB,Cobram,cars,regional_non24
-EWO,Wodonga,E,Eastern,Wangaratta (ED4),ED4,EWO,Wodonga,EWO,Wodonga,EWO,Wodonga,cars vans hwp ciu fviu socit,regional_24
+EWT,Wangaratta,E,Eastern,Wangaratta (ED4),ED4,EWT,Wangaratta,EWT,Wangaratta,EWT,Wangaratta,cars vans hwp ciu,regional_24
 # Morwell (ED5)
 TBC,Station TBC,E,Eastern,Morwell (ED5),ED5,,,,,,,,regional_24
 # Bairnsdale (ED6)
