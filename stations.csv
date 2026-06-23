@@ -121,7 +121,13 @@ EMX,Murchison,E,Eastern,Goulburn Valley (ED3),ED3,ESP,Greater Shepparton,ESP,She
 ESP,Shepparton,E,Eastern,Goulburn Valley (ED3),ED3,ESP,Greater Shepparton,ESP,Shepparton,ESP,Shepparton,cars vans hwp ciu fviu socit,regional_24
 ETT,Tatura,E,Eastern,Goulburn Valley (ED3),ED3,ESP,Greater Shepparton,ESP,Shepparton,ESP,Shepparton,cars vans,regional_non24
 # Wangaratta (ED4)
+ECB,Cobram,E,Eastern,Wangaratta (ED4),ED4,EWT,Wangaratta,ECB,Cobram,ECB,Cobram,cars vans hwp ciu,regional_non24
+EKT,Katamatite,E,Eastern,Wangaratta (ED4),ED4,EWT,Wangaratta,ECB,Cobram,ECB,Cobram,cars,regional_single
+ENT,Nathalia,E,Eastern,Wangaratta (ED4),ED4,EWT,Wangaratta,ECB,Cobram,ECB,Cobram,cars,regional_non24
+ENM,Numurkah,E,Eastern,Wangaratta (ED4),ED4,EWT,Wangaratta,ECB,Cobram,ECB,Cobram,cars vans,regional_non24
+ETH,Tungamah,E,Eastern,Wangaratta (ED4),ED4,EWT,Wangaratta,ECB,Cobram,ECB,Cobram,cars,regional_single
 EWT,Wangaratta,E,Eastern,Wangaratta (ED4),ED4,EWT,Wangaratta,EWT,Wangaratta,EWT,Wangaratta,cars vans hwp ciu,regional_24
+EYW,Yarrawonga,E,Eastern,Wangaratta (ED4),ED4,EWT,Wangaratta,ECB,Cobram,ECB,Cobram,cars vans,regional_non24
 # Morwell (ED5)
 TBC,Station TBC,E,Eastern,Morwell (ED5),ED5,,,,,,,,regional_24
 # Bairnsdale (ED6)
