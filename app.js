@@ -18,8 +18,6 @@ const S = {
   hwp:           '',
   hwpLabel:      '',
   ciu:           '',
-  ciuLabel:      '',
-  services:      '',
   role:          'metro_24',
   selected:      new Set(),
 };
@@ -103,8 +101,6 @@ function ingestCSV(text) {
     const hwp            =  f[idx('hwp')]             || '';
     const hwpLabel       =  f[idx('hwp_label')]       || '';
     const ciu            =  f[idx('ciu')]             || '';
-    const ciuLabel       =  f[idx('ciu_label')]       || '';
-    const services       =  f[idx('services')]        || '';
     const classification =  f[idx('classification')]  || 'metro_24';
 
     if (!code || !name || !regionKey) continue;
@@ -123,7 +119,7 @@ function ingestCSV(text) {
     // Push as a pipe-delimited entry matching the format in data.js
     // Format: CODE|Name|DivCode|PSA|PSALabel|HWP|HWPLabel|CIU|classification
     REGION_DATA[regionKey].divisions[divisionName].push(
-      `${code}|${name}|${divCode}|${psa}|${psaLabel}|${hwp}|${hwpLabel}|${ciu}|${ciuLabel}|${services}|${classification}`
+      `${code}|${name}|${divCode}|${psa}|${psaLabel}|${hwp}|${hwpLabel}|${ciu}|${classification}`
     );
   }
 
@@ -218,10 +214,6 @@ function onStation() {
     if (st.classification) {
       document.getElementById('knownRole').value = st.classification;
     }
-    // Default supervisor to No for single-member and non-24-hour stations,
-    // Yes for everything else. Can always be manually overridden.
-    const noSuper = ['regional_single', 'regional_non24'].includes(st.classification);
-    document.getElementById('superRequired').value = noSuper ? 'no' : 'yes';
   }
 }
 
@@ -237,8 +229,6 @@ function goStep2() {
   S.hwp           = st.hwp;
   S.hwpLabel      = st.hwpLabel;
   S.ciu           = st.ciu;
-  S.ciuLabel      = st.ciuLabel;
-  S.services      = st.services;
   S.role          = document.getElementById('knownRole').value;
 
   const r = document.getElementById('selRegion').value;
@@ -274,50 +264,31 @@ function buildServiceGrid() {
   const g = document.getElementById('svcGrid');
   g.innerHTML = '';
 
-  // Build allowed set from S.services. null means no restriction (all allowed).
-  const allowedSet = S.services
-    ? new Set(S.services.trim().split(/\s+/))
-    : null;
-
-  const isAllowed = (id) => !allowedSet || allowedSet.has(id);
-
   SERVICES.forEach(sv => {
-    const allowed  = isAllowed(sv.id);
-    const selected = S.selected.has(sv.id);
-
-    // If previously selected but no longer allowed, silently deselect
-    if (!allowed && selected) {
-      S.selected.delete(sv.id);
-      if (SOLO_CARDS[sv.id]) S.selected.delete(SOLO_CARDS[sv.id].id);
-    }
-
+    // Main service card
     const el = document.createElement('div');
-    el.className = 'svc-item'
-      + (selected && allowed ? ' on' : '')
-      + (!allowed ? ' svc-item--disabled' : '');
+    el.className = 'svc-item' + (S.selected.has(sv.id) ? ' on' : '');
     el.dataset.id = sv.id;
     el.innerHTML = `
-      <div class="svc-check">${selected && allowed ? '✓' : ''}</div>
+      <div class="svc-check">${S.selected.has(sv.id) ? '✓' : ''}</div>
       <div class="svc-text">
         <div class="svc-name">${sv.icon} ${sv.name}</div>
-        ${!allowed ? '<div class="svc-unavailable">Not available at this station</div>' : ''}
       </div>`;
-
-    if (allowed) {
-      el.onclick = () => {
-        if (S.selected.has(sv.id)) {
-          S.selected.delete(sv.id);
-          if (SOLO_CARDS[sv.id]) S.selected.delete(SOLO_CARDS[sv.id].id);
-        } else {
-          S.selected.add(sv.id);
-        }
-        buildServiceGrid();
-      };
-    }
+    el.onclick = () => {
+      if (S.selected.has(sv.id)) {
+        S.selected.delete(sv.id);
+        // Also deselect the solo card if the parent is deselected
+        if (SOLO_CARDS[sv.id]) S.selected.delete(SOLO_CARDS[sv.id].id);
+      } else {
+        S.selected.add(sv.id);
+      }
+      // Rebuild the grid so the solo card appears/disappears in the right position
+      buildServiceGrid();
+    };
     g.appendChild(el);
 
-    // Solo card — only shown if parent is selected AND allowed
-    if (SOLO_CARDS[sv.id] && S.selected.has(sv.id) && allowed) {
+    // If this service is selected and has a solo card, inject it right after
+    if (SOLO_CARDS[sv.id] && S.selected.has(sv.id)) {
       const solo   = SOLO_CARDS[sv.id];
       const soloOn = S.selected.has(solo.id);
       const soloEl = document.createElement('div');
@@ -389,6 +360,41 @@ function buildOutput() {
     port:  buildPORTPool(),
     rru:   buildRRUPool(c),
   };
+
+  // ── Suffix deduplication ───────────────────────────────────────────────────
+  // Tracks numeric suffixes already assigned, keyed by callsign prefix.
+  // Only deduplicate within the same prefix — ESP311 and EWT311 are fine together.
+  // FIXED and SUP units are excluded (they don't move around).
+  const usedSuffixes = new Map(); // prefix → Set of numeric suffixes
+
+  function claimSuffix(cs) {
+    // Extract prefix (letters) and suffix (trailing digits)
+    const m = cs.match(/^([A-Za-z]+)(\d+)$/);
+    if (!m) return true; // non-standard format — always allow
+    const [, prefix, suffix] = m;
+    if (!usedSuffixes.has(prefix)) usedSuffixes.set(prefix, new Set());
+    const seen = usedSuffixes.get(prefix);
+    if (seen.has(suffix)) return false; // already taken
+    seen.add(suffix);
+    return true;
+  }
+
+  function dedupePool(pool) {
+    // Walk the pool in order; claim each non-SUP/FIXED unit's suffix.
+    // Replace duplicates with null so pool positions are preserved for slicing.
+    return pool.map(u => {
+      if (!u || u.shifts.includes('SUP') || u.shifts.includes('FIXED')) return u;
+      return claimSuffix(u.cs) ? u : null;
+    }).filter(Boolean);
+  }
+
+  // Dedupe the main POOLS in priority order: cars → vans → rru → ciu → hwp
+  // (station-prefixed services first, then shared-prefix services)
+  if (S.selected.has('cars'))  POOLS.cars  = dedupePool(POOLS.cars);
+  if (S.selected.has('vans'))  POOLS.vans  = dedupePool(POOLS.vans);
+  if (S.selected.has('rru'))   POOLS.rru   = dedupePool(POOLS.rru);
+  if (S.selected.has('ciu'))   POOLS.ciu   = dedupePool(POOLS.ciu);
+  if (S.selected.has('hwp'))   POOLS.hwp   = dedupePool(POOLS.hwp);
 
   // ── Supervision ────────────────────────────────────────────────────────────
   // Base station supervisors first, then SUP-tagged units from every selected
@@ -529,7 +535,7 @@ function buildOutput() {
 
   // ── Specialist services — scalable within documented CAD ranges ───────────
   if (S.selected.has('fviu')) {
-    const pool = buildFVIUPool(c);
+    const pool = dedupePool(buildFVIUPool(c));
     sections.push({
       id: 'fviu', outputName: 'FVIU (Family Violence Investigation Unit)', icon: '🏠', name: 'FVIU',
       units: pool, scalable: true,
@@ -538,7 +544,7 @@ function buildOutput() {
   }
 
   if (S.selected.has('socit')) {
-    const pool = buildSOCITPool(c);
+    const pool = dedupePool(buildSOCITPool(c));
     sections.push({
       id: 'socit', outputName: 'SOCIT (Sexual Offences & Child Investigations Team)', icon: '👶', name: 'SOCIT',
       units: pool, scalable: true,
@@ -547,7 +553,7 @@ function buildOutput() {
   }
 
   if (S.selected.has('dog')) {
-    const pool = buildDogPool();
+    const pool = dedupePool(buildDogPool());
     sections.push({
       id: 'dog', outputName: 'CAN (Dog Squad)', icon: '🐕', name: 'Dog Squad (CAN)',
       units: pool, scalable: true,
@@ -556,7 +562,7 @@ function buildOutput() {
   }
 
   if (S.selected.has('sar')) {
-    const pool = buildSARPool();
+    const pool = dedupePool(buildSARPool());
     sections.push({
       id: 'sar', outputName: 'RES (Search & Rescue)', icon: '🔦', name: 'Search & Rescue (RES)',
       units: pool, scalable: true,
@@ -565,7 +571,7 @@ function buildOutput() {
   }
 
   if (S.selected.has('sog')) {
-    const pool = buildSOGPool();
+    const pool = dedupePool(buildSOGPool());
     sections.push({
       id: 'sog', outputName: 'SOG (Special Operations Group)', icon: '🦅', name: 'SOG (Special Operations Group)',
       units: pool, scalable: true,
@@ -574,7 +580,7 @@ function buildOutput() {
   }
 
   if (S.selected.has('cirt')) {
-    const pool = buildCIRTPool();
+    const pool = dedupePool(buildCIRTPool());
     sections.push({
       id: 'cirt', outputName: 'CIRT (Critical Incident Response Team)', icon: '🎯', name: 'CIRT (Critical Incident Response Team)',
       units: pool, scalable: true,
@@ -583,7 +589,7 @@ function buildOutput() {
   }
 
   if (S.selected.has('polair')) {
-    const pool = buildPOLAIRPool();
+    const pool = dedupePool(buildPOLAIRPool());
     sections.push({
       id: 'polair', outputName: 'POLAIR (Air Wing)', icon: '🚁', name: 'Air Wing',
       units: pool, scalable: true,
@@ -592,7 +598,7 @@ function buildOutput() {
   }
 
   if (S.selected.has('hviu')) {
-    const pool = buildHVIUPool();
+    const pool = dedupePool(buildHVIUPool());
     sections.push({
       id: 'hviu', outputName: 'ROA (Heavy Vehicle Unit)', icon: '🚛', name: 'Heavy Vehicle Unit (ROA)',
       units: pool, scalable: true,
@@ -601,7 +607,7 @@ function buildOutput() {
   }
 
   if (S.selected.has('mounted')) {
-    const pool = buildMountedPool();
+    const pool = dedupePool(buildMountedPool());
     sections.push({
       id: 'mounted', outputName: 'MOU (Mounted Branch)', icon: '🐴', name: 'Mounted Branch (MOU)',
       units: pool, scalable: true,
@@ -610,7 +616,7 @@ function buildOutput() {
   }
 
   if (S.selected.has('cri')) {
-    const pool = buildCRIPool();
+    const pool = dedupePool(buildCRIPool());
     sections.push({
       id: 'cri', outputName: 'CRI (Crime Desk)', icon: '📷', name: 'Crime Desk (CRI)',
       units: pool, scalable: true,
@@ -666,11 +672,10 @@ function renderOutput(code, role, roleLabel, sections) {
   if (S.psa || S.hwp || S.ciu) {
     const psaDisplay = S.psaLabel ? `${S.psaLabel} (${S.psa})` : resolveStationLabel(S.psa);
     const hwpDisplay = S.hwpLabel ? `${S.hwpLabel} (${S.hwp})` : resolveStationLabel(S.hwp);
-    const ciuDisplay = S.ciuLabel ? `${S.ciuLabel} (${S.ciu})` : resolveStationLabel(S.ciu);
     const linkItems = [
       S.psa ? `<div class="link-item"><div class="link-key">Police Service Area (PSA)</div><div class="link-val">${psaDisplay}</div></div>` : '',
       S.hwp ? `<div class="link-item"><div class="link-key">Highway Patrol (HWP)</div><div class="link-val">${hwpDisplay}</div></div>` : '',
-      S.ciu ? `<div class="link-item"><div class="link-key">Crime Investigation Unit (CIU)</div><div class="link-val">${ciuDisplay}</div></div>` : '',
+      S.ciu ? `<div class="link-item"><div class="link-key">Crime Investigation Unit (CIU)</div><div class="link-val">${resolveStationLabel(S.ciu)}</div></div>` : '',
     ].filter(Boolean).join('');
     linksHtml = `<div class="card" style="margin-bottom:14px">
       <div class="card-head"><div class="dot"></div>Station Support Links</div>
@@ -801,13 +806,10 @@ function buildExportText(code, role, roleLabel, sections) {
   });
 
   if (S.psa || S.hwp || S.ciu) {
-    const psaExp = S.psaLabel ? `${S.psaLabel} (${S.psa})` : resolveStationLabel(S.psa);
-    const hwpExp = S.hwpLabel ? `${S.hwpLabel} (${S.hwp})` : resolveStationLabel(S.hwp);
-    const ciuExp = S.ciuLabel ? `${S.ciuLabel} (${S.ciu})` : resolveStationLabel(S.ciu);
     exp += `STATION SUPPORT LINKS\n`;
-    if (S.psa) exp += `  Police Service Area (PSA)      : ${psaExp}\n`;
-    if (S.hwp) exp += `  Highway Patrol (HWP)           : ${hwpExp}\n`;
-    if (S.ciu) exp += `  Crime Investigation Unit (CIU)  : ${ciuExp}\n`;
+    if (S.psa) exp += `  Police Service Area (PSA)     : ${resolveStationLabel(S.psa)}\n`;
+    if (S.hwp) exp += `  Highway Patrol (HWP)          : ${resolveStationLabel(S.hwp)}\n`;
+    if (S.ciu) exp += `  Crime Investigation Unit (CIU) : ${resolveStationLabel(S.ciu)}\n`;
   }
 
   return exp;
