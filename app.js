@@ -45,7 +45,7 @@ setInterval(() => {
 //
 // CSV columns (header row required):
 //   code, name, region, region_label, division, div_code,
-//   psa, psa_label, hwp, hwp_label, ciu, ciu_label, services, classification
+//   psa, hwp, ciu, classification
 // =============================================================================
 async function loadCSV() {
   try {
@@ -217,7 +217,7 @@ function onStation() {
     if (st.classification) {
       document.getElementById('knownRole').value = st.classification;
     }
-    const noSuper = ['regional_single', 'regional_non24'].includes(st.classification);
+    const noSuper = ['regional_single'].includes(st.classification);
     document.getElementById('superRequired').value = noSuper ? 'no' : 'yes';
   }
 }
@@ -766,7 +766,7 @@ function onSlider(svcId, rawVal) {
 
   // Update total count in header
   const total = window._sections.reduce((a, s) => {
-    const du = s.units.filter(u => !u.shifts.includes('FIXED') && !u.shifts.includes('SUP'));
+    const du = s.units.filter(u => !u.shifts.includes('FIXED'));
     return a + (s.scalable ? (OVERRIDES[s.id] || defaultCount(s.id)) : du.length);
   }, 0);
   const tc = document.getElementById('totalCount');
